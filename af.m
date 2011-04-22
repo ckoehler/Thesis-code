@@ -1,15 +1,15 @@
-clear all;
-close all;
-
-signal = [ +1 +1 +1 +1 +1 -1 -1 +1 +1 -1 +1 -1 +1];
-resolution = 1;
-
-%function AF = af(signal)
+function AF = af(signal, T, f_max, carrier, resolution, f_signal, do_freq_mod)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
 
-  f = linspace(0,1, 101);
+  % speed of light
+  c = 3e8;
 
+  if do_freq_mod
+    df = f_signal(2)-f_signal(1);
+  else
+    df = 1;
+  end
 
   % default signal u, barker code
   %signal = [1 2 3];
@@ -19,14 +19,25 @@ resolution = 1;
   signal = kron(signal,ones(1,resolution));
 
   % time vector
-  t = (0:length(signal)-1)/resolution;
+  %t = (0:length(signal)-1)/resolution*length(signal)*T;
+  t = linspace(0,T,length(signal));
 
+  f = linspace(0,f_max, length(signal))*df;
+    
   % time interval
   dt = t(2)-t(1);
 
   % get amplitude and phase from the signal
   u_amplitude = abs(signal);
   u_phase = angle(signal);
+
+  if(do_freq_mod)
+    if resolution == 1
+      u_phase = u_phase+2*pi*cumsum(f_signal);
+    else
+
+    end
+  end
 
   % exponential is e^j*phi;
   u_exponent = exp(1i*u_phase);
@@ -63,16 +74,25 @@ resolution = 1;
   abs_af = abs(u_shift*u_correlation);
   abs_af = abs_af./max(max(abs_af));
   AF=abs_af;
-  delay = [-fliplr(t) t(2:end)];
-%end
+  delay = [-fliplr(t) t(2:end)] * c;
 
-figure;
-surface(delay, f, AF);
-shading flat;
-view(-40,50)
+  % convert doppler frequency to velocity
+  v = f .* c ./ carrier ./ 2;
 
-figure;
-subplot(2,1,1);
-plot(u_amplitude);
-subplot(2,1,2);
-plot(u_phase);
+  figure;
+  surface(delay, v, AF);
+  shading faceted;
+  view(-40,50);
+  t_str = sprintf('Ambiguity function with T=%3.3e s at f=%1.2f GHz    ', T, carrier./1e9);
+  title(t_str,'FontSize',12);
+  xlabel('Range delay in m    ','FontSize',12);
+  ylabel('Radial velocity in m/s     ','FontSize',12);
+  zlabel('Normalized magnitude     ','FontSize',12);
+  axis([-inf inf -inf inf 0 1]);
+  cmrow = [41	143	165] ./ 255;
+
+
+  cm=repmat(cmrow, [64 1]); 	
+  colormap(cm);
+
+end
