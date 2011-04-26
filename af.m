@@ -1,9 +1,15 @@
-function AF = af(signal, T, f_max, carrier, resolution, f_signal, do_freq_mod)
+function AF = af(signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
-
+  
   % speed of light
   c = 3e8;
+
+  % wavelength
+  lam = c/carrier;
+
+  % convert v_max to a frequency
+  f_max = 2*v_max/lam;
 
   if do_freq_mod
     df = f_signal(2)-f_signal(1);
@@ -11,18 +17,17 @@ function AF = af(signal, T, f_max, carrier, resolution, f_signal, do_freq_mod)
     df = 1;
   end
 
-  % default signal u, barker code
-  %signal = [1 2 3];
-  %signal = [1 1 1];
+  orig_m = length(signal);
 
-
+  % expand the signal for oversampling.
   signal = kron(signal,ones(1,resolution));
+  f_signal = kron(f_signal,ones(1,resolution));
 
   % time vector
-  %t = (0:length(signal)-1)/resolution*length(signal)*T;
   t = linspace(0,T,length(signal));
 
-  f = linspace(0,f_max, length(signal))*df;
+  % frequency span
+  f = linspace(0,f_max, length(signal));
     
   % time interval
   dt = t(2)-t(1);
@@ -30,13 +35,12 @@ function AF = af(signal, T, f_max, carrier, resolution, f_signal, do_freq_mod)
   % get amplitude and phase from the signal
   u_amplitude = abs(signal);
   u_phase = angle(signal);
+  %
+  % this is the signal length
+  m = length(u_amplitude);
 
   if(do_freq_mod)
-    if resolution == 1
-      u_phase = u_phase+2*pi*cumsum(f_signal);
-    else
-
-    end
+    u_phase = u_phase+2*pi*cumsum(f_signal);
   end
 
   % exponential is e^j*phi;
@@ -45,8 +49,6 @@ function AF = af(signal, T, f_max, carrier, resolution, f_signal, do_freq_mod)
   % reassemble the signal
   u = u_amplitude .* u_exponent;
 
-  % this is the signal length
-  m = length(u);
 
 
   % now create the signal sparse matrix. No. of rows
