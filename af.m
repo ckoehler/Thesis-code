@@ -1,4 +1,4 @@
-function AF = af(signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
+function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   
@@ -11,17 +11,11 @@ function AF = af(signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
   % convert v_max to a frequency
   f_max = 2*v_max/lam;
 
-  if do_freq_mod
-    df = f_signal(2)-f_signal(1);
-  else
-    df = 1;
-  end
-
   orig_m = length(signal);
 
   % expand the signal for oversampling.
   signal = kron(signal,ones(1,resolution));
-  f_signal = kron(f_signal,ones(1,resolution));
+  %f_signal = kron(f_signal,ones(1,resolution));
 
   % time vector
   t = linspace(0,T,length(signal));
@@ -40,11 +34,20 @@ function AF = af(signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
   m = length(u_amplitude);
 
   if(do_freq_mod)
-    u_phase = u_phase+2*pi*cumsum(f_signal);
+    %u_phase = u_phase+pi.*f_signal.*t;
+    u_freqmod = pi.*f_signal.*t;
+
+
+    % rebuild the bandwidth from the f_signal
+    B = f_signal(end)-f_signal(1);
+    t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz, B = %3.2f MHz)      ', desc_str, T, carrier./1e9, B./1e6);
+  else
+    u_freqmod = 0;
+    t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz)      ', desc_str, T, carrier./1e9);
   end
 
   % exponential is e^j*phi;
-  u_exponent = exp(1i*u_phase);
+  u_exponent = exp(j*u_phase).*exp(j.*u_freqmod);
 
   % reassemble the signal
   u = u_amplitude .* u_exponent;
@@ -83,18 +86,39 @@ function AF = af(signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
 
   figure;
   surface(delay, v, AF);
-  shading faceted;
   view(-40,50);
-  t_str = sprintf('Ambiguity function with T=%3.3e s at f=%1.2f GHz    ', T, carrier./1e9);
   title(t_str,'FontSize',12);
   xlabel('Range delay in m    ','FontSize',12);
   ylabel('Radial velocity in m/s     ','FontSize',12);
   zlabel('Normalized magnitude     ','FontSize',12);
   axis([-inf inf -inf inf 0 1]);
-  cmrow = [41	143	165] ./ 255;
+  shading flat;
+  %shading faceted;
+  %cmrow = [41	143	165] ./ 255;
+  %cm=repmat(cmrow, [64 1]); 	
+  %colormap(cm);
 
+  figure;
+  first_title = sprintf('%s -- Amplitude', desc_str);
+  subplot(4,1,1);
+  plot(t, u_amplitude);
+  xlim([0, t(end)]);
+  title(first_title);
 
-  cm=repmat(cmrow, [64 1]); 	
-  colormap(cm);
+  subplot(4,1,2);
+  plot(t, u_phase);
+  xlim([0, t(end)]);
+  title('Phase (before frequency modulation)');
 
+  subplot(4,1,3);
+  plot(t, u_phase+u_freqmod);
+  xlim([0, t(end)]);
+  title('Phase (after frequency modulation)');
+
+  subplot(4,1,4);
+  plot(t,f_signal);
+  title('Frequency');
+  xlim([0, t(end)]);
+  ylabel('Frequency Hz');
+  xlabel('Signal duration T');
 end
