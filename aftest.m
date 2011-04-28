@@ -17,7 +17,7 @@ f_factor = B/T;
 t = linspace(0,T,length(signal)*resolution);
 f_signal=f_factor.*t-B/2;
 do_freq_mod = true;
-af('LFM', signal, T, v_max, carrier, resolution, f_signal, do_freq_mod);
+%af('LFM', signal, T, v_max, carrier, resolution, f_signal, do_freq_mod);
 
 resolution = 10;
 signal = ones(1,51);
@@ -32,3 +32,14 @@ do_freq_mod = true;
 signal = ones(1,51);
 do_freq_mod = false;
 %af('Pulse', signal, T, v_max, carrier, resolution, f_signal, do_freq_mod);
+%
+
+resolution = 20;
+the_pulse = [0 0 1 0 0];
+signal = repmat(the_pulse,[1 6]);
+B = 100e3;
+f_factor = B/T;
+t = linspace(0,T,length(signal)*resolution);
+f_signal=f_factor.*t-B/2;
+do_freq_mod = true;
+af('LFM Pulse train (6)', signal, T, v_max, carrier, resolution, f_signal, do_freq_mod);
