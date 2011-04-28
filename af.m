@@ -11,11 +11,8 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
   % convert v_max to a frequency
   f_max = 2*v_max/lam;
 
-  orig_m = length(signal);
-
   % expand the signal for oversampling.
   signal = kron(signal,ones(1,resolution));
-  %f_signal = kron(f_signal,ones(1,resolution));
 
   % time vector
   t = linspace(0,T,length(signal));
@@ -41,9 +38,11 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
     % rebuild the bandwidth from the f_signal
     B = f_signal(end)-f_signal(1);
     t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz, B = %3.2f MHz)      ', desc_str, T, carrier./1e9, B./1e6);
+    number_of_columns = 2;
   else
     u_freqmod = 0;
     t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz)      ', desc_str, T, carrier./1e9);
+    number_of_columns = 1;
   end
 
   % exponential is e^j*phi;
@@ -100,25 +99,39 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
 
   figure;
   first_title = sprintf('%s -- Amplitude', desc_str);
-  subplot(4,1,1);
+  subplot(2, number_of_columns,1);
   plot(t, u_amplitude);
   xlim([0, t(end)]);
   title(first_title);
 
-  subplot(4,1,2);
+  subplot(2, number_of_columns,2);
   plot(t, u_phase);
   xlim([0, t(end)]);
-  title('Phase (before frequency modulation)');
 
-  subplot(4,1,3);
-  plot(t, u_phase+u_freqmod);
-  xlim([0, t(end)]);
-  title('Phase (after frequency modulation)');
 
-  subplot(4,1,4);
-  plot(t,f_signal);
-  title('Frequency');
+  if do_freq_mod
+    title('Phase (before frequency modulation)');
+    subplot(2, number_of_columns,3);
+    plot(t, u_phase+u_freqmod);
+    xlim([0, t(end)]);
+    title('Phase (after frequency modulation)');
+    xlabel('Signal duration T');
+
+    subplot(2, number_of_columns,4);
+    plot(t,f_signal);
+    title('Frequency');
+    xlim([0, t(end)]);
+    ylabel('Frequency Hz');
+    xlabel('Signal duration T');
+  else
+    title('Phase');
+    xlabel('Signal duration T');
+  end
+
+  figure;
+  plot(t,real(u));
   xlim([0, t(end)]);
-  ylabel('Frequency Hz');
+  signal_title = sprintf('%s -- Full Signal', desc_str);
+  title(signal_title);
   xlabel('Signal duration T');
 end
