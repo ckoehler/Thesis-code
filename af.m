@@ -1,9 +1,14 @@
-function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_freq_mod)
+function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod, do_af)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
+  %
+  % fds = Doppler dimension sampling frequency
+  % fs = Range dimension sampling frequency
   
   % speed of light
   c = 3e8;
+
+  AF = -1;
 
   % wavelength
   lam = c/carrier;
@@ -11,14 +16,18 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
   % convert v_max to a frequency
   f_max = 2*v_max/lam;
 
+  m_orig = length(signal);
+
+  N = fs.*T
+
   % expand the signal for oversampling.
-  signal = kron(signal,ones(1,resolution));
+  signal = kron(signal,ones(1,N));
 
   % time vector
   t = linspace(0,T,length(signal));
 
   % frequency span
-  f = linspace(0,f_max, length(signal));
+  f = linspace(0,f_max, m_orig*fds);
     
   % time interval
   dt = t(2)-t(1);
@@ -32,7 +41,7 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
 
   if(do_freq_mod)
     %u_phase = u_phase+pi.*f_signal.*t;
-    u_freqmod = pi.*f_signal.*t;
+    u_freqmod = pi.*f_signal.*t./2./fs;
 
 
     % rebuild the bandwidth from the f_signal
@@ -53,49 +62,51 @@ function AF = af(desc_str, signal, T, v_max, carrier, resolution, f_signal, do_f
 
 
 
-  % now create the signal sparse matrix. No. of rows
-  % are the same as we would get from the convolution, i.e.
-  % twice the signal length - 1, or 25 for a length 13 Barker code.
-  u_matrix = spdiags(u',0,m*2-1,m);
+  if(do_af)
+    % now create the signal sparse matrix. No. of rows
+    % are the same as we would get from the convolution, i.e.
+    % twice the signal length - 1, or 25 for a length 13 Barker code.
+    u_matrix = spdiags(u',0,m*2-1,m);
 
 
-  % now we need to create a shifted matrix of u, where each row is the
-  % signal u shifted in time. To do that, we create a padded vector of
-  % u and then just look at parts of the Hankel matrix. It also takes
-  % care of getting the time-reversed signal so we get the correlation,
-  % not just convolution of the signal.
-  u_padded = [zeros(1,m-1) u];
-  shifted_u_matrix = sparse(hankel(u_padded));
-  shifted_u_matrix = shifted_u_matrix(1:m,:);
+    % now we need to create a shifted matrix of u, where each row is the
+    % signal u shifted in time. To do that, we create a padded vector of
+    % u and then just look at parts of the Hankel matrix. It also takes
+    % care of getting the time-reversed signal so we get the correlation,
+    % not just convolution of the signal.
+    u_padded = [zeros(1,m-1) u];
+    shifted_u_matrix = sparse(hankel(u_padded));
+    shifted_u_matrix = shifted_u_matrix(1:m,:);
 
-  u_correlation = u_matrix*shifted_u_matrix;
-  u_correlation = u_correlation(1:m,:);
+    u_correlation = u_matrix*shifted_u_matrix;
+    u_correlation = u_correlation(1:m,:);
 
 
-  % now we need to apply a Doppler shift to this thing. It's defined as:
-  u_shift = exp(1i*2*pi*f'*t);
+    % now we need to apply a Doppler shift to this thing. It's defined as:
+    u_shift = exp(1i*2*pi*f'*t);
 
-  abs_af = abs(u_shift*u_correlation);
-  abs_af = abs_af./max(max(abs_af));
-  AF=abs_af;
-  delay = [-fliplr(t) t(2:end)] * c;
+    abs_af = abs(u_shift*u_correlation);
+    abs_af = abs_af./max(max(abs_af));
+    AF=abs_af;
+    delay = [-fliplr(t) t(2:end)] * c;
 
-  % convert doppler frequency to velocity
-  v = f .* c ./ carrier ./ 2;
+    % convert doppler frequency to velocity
+    v = f .* c ./ carrier ./ 2;
 
-  figure;
-  surface(delay, v, AF);
-  view(-40,50);
-  title(t_str,'FontSize',12);
-  xlabel('Range delay in m    ','FontSize',12);
-  ylabel('Radial velocity in m/s     ','FontSize',12);
-  zlabel('Normalized magnitude     ','FontSize',12);
-  axis([-inf inf -inf inf 0 1]);
-  shading flat;
-  %shading faceted;
-  %cmrow = [41	143	165] ./ 255;
-  %cm=repmat(cmrow, [64 1]); 	
-  %colormap(cm);
+    figure;
+    surface(delay, v, AF);
+    view(-40,50);
+    title(t_str,'FontSize',12);
+    xlabel('Range delay in m    ','FontSize',12);
+    ylabel('Radial velocity in m/s     ','FontSize',12);
+    zlabel('Normalized magnitude     ','FontSize',12);
+    axis([-inf inf -inf inf 0 1]);
+    shading flat;
+    %shading faceted;
+    %cmrow = [41	143	165] ./ 255;
+    %cm=repmat(cmrow, [64 1]); 	
+    %colormap(cm);
+  end
 
   figure;
   first_title = sprintf('%s -- Amplitude', desc_str);
