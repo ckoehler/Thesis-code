@@ -1,4 +1,4 @@
-function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod, do_af)
+function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, do_freq_mod, do_af)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   %
@@ -18,13 +18,13 @@ function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_
 
   m_orig = length(signal);
 
-  N = fs.*T
+  N = fs.*tau
 
   % expand the signal for oversampling.
   signal = kron(signal,ones(1,N));
 
   % time vector
-  t = linspace(0,T,length(signal));
+  t = linspace(0,tau,length(signal));
 
   % frequency span
   f = linspace(0,f_max, m_orig*fds);
@@ -41,21 +41,21 @@ function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_
 
   if(do_freq_mod)
     %u_phase = u_phase+pi.*f_signal.*t;
-    u_freqmod = pi.*f_signal.*t./2./fs;
+    u_freqmod = pi.*n.*cumsum(f_signal);
 
 
     % rebuild the bandwidth from the f_signal
     B = f_signal(end)-f_signal(1);
-    t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz, B = %3.2f MHz)      ', desc_str, T, carrier./1e9, B./1e6);
+    t_str = sprintf('%s (tau=%3.3e s, f=%1.2f GHz, B = %3.2f MHz)      ', desc_str, tau, carrier./1e9, B./1e6);
     number_of_columns = 2;
   else
     u_freqmod = 0;
-    t_str = sprintf('%s (T=%3.3e s, f=%1.2f GHz)      ', desc_str, T, carrier./1e9);
+    t_str = sprintf('%s (tau=%3.3e s, f=%1.2f GHz)      ', desc_str, tau, carrier./1e9);
     number_of_columns = 1;
   end
 
   % exponential is e^j*phi;
-  u_exponent = exp(j*u_phase).*exp(j.*u_freqmod);
+  u_exponent = exp(j*u_phase).*exp(j.*pi.*n./fs.*u_freqmod);
 
   % reassemble the signal
   u = u_amplitude .* u_exponent;
@@ -126,17 +126,17 @@ function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_
     plot(t, u_phase+u_freqmod);
     xlim([0, t(end)]);
     title('Phase (after frequency modulation)');
-    xlabel('Signal duration T');
+    xlabel('Signal duration tau');
 
     subplot(2, number_of_columns,4);
     plot(t,f_signal);
     title('Frequency');
     xlim([0, t(end)]);
     ylabel('Frequency Hz');
-    xlabel('Signal duration T');
+    xlabel('Signal duration tau');
   else
     title('Phase');
-    xlabel('Signal duration T');
+    xlabel('Signal duration tau');
   end
 
   figure;
@@ -144,5 +144,5 @@ function [AF u] = af(desc_str, signal, T, v_max, fds, carrier, fs, f_signal, do_
   xlim([0, t(end)]);
   signal_title = sprintf('%s -- Full Signal', desc_str);
   title(signal_title);
-  xlabel('Signal duration T');
+  xlabel('Signal duration tau');
 end
