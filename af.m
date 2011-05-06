@@ -10,6 +10,12 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
 
   AF = -1;
 
+  % this is how many samples we need to use.
+  N = tau*fs;
+
+  % this is the "time" sequence, just a sequence of samples.
+  n = 0:N-1;
+
   % wavelength
   lam = c/carrier;
 
@@ -18,20 +24,18 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
 
   m_orig = length(signal);
 
-  N = fs.*tau
-
   % expand the signal for oversampling.
-  signal = kron(signal,ones(1,N));
+  tempsignal = kron(signal,ones(1,N/m_orig));
+  diff_length = N-length(tempsignal)
+  signal = [tempsignal zeros(1,diff_length)];
+  clear tempsignal;
 
-  % time vector
-  t = linspace(0,tau,length(signal));
+  % time vector. We only need this for plotting.
+  t = linspace(0,tau,length(signal)-diff_length);
 
   % frequency span
   f = linspace(0,f_max, m_orig*fds);
     
-  % time interval
-  dt = t(2)-t(1);
-
   % get amplitude and phase from the signal
   u_amplitude = abs(signal);
   u_phase = angle(signal);
@@ -41,7 +45,7 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
 
   if(do_freq_mod)
     %u_phase = u_phase+pi.*f_signal.*t;
-    u_freqmod = pi.*n.*cumsum(f_signal);
+    u_freqmod = 2.*pi.*n./fs.*f_signal;
 
 
     % rebuild the bandwidth from the f_signal
@@ -55,7 +59,7 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   end
 
   % exponential is e^j*phi;
-  u_exponent = exp(j*u_phase).*exp(j.*pi.*n./fs.*u_freqmod);
+  u_exponent = exp(j*u_phase).*exp(j.*u_freqmod);
 
   % reassemble the signal
   u = u_amplitude .* u_exponent;
@@ -77,18 +81,34 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
     u_padded = [zeros(1,m-1) u];
     shifted_u_matrix = sparse(hankel(u_padded));
     shifted_u_matrix = shifted_u_matrix(1:m,:);
+    'u matrix'
+    size(u_matrix)
+    'shifted'
+    size(shifted_u_matrix)
 
     u_correlation = u_matrix*shifted_u_matrix;
     u_correlation = u_correlation(1:m,:);
 
 
     % now we need to apply a Doppler shift to this thing. It's defined as:
-    u_shift = exp(1i*2*pi*f'*t);
+    u_shift = exp(j*2*pi*f'*n./fs);
 
+    'n'
+    size(n)
+    'f'
+    size(f)
+    'u shift'
+    size(u_shift)
+    'u correlation'
+    size(u_correlation)
     abs_af = abs(u_shift*u_correlation);
     abs_af = abs_af./max(max(abs_af));
-    AF=abs_af;
+    AF=abs_af(:,1:end-(2*diff_length));
+    'af'
+    size(AF)
     delay = [-fliplr(t) t(2:end)] * c;
+    'delay'
+    size(delay)
 
     % convert doppler frequency to velocity
     v = f .* c ./ carrier ./ 2;
@@ -111,25 +131,26 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   figure;
   first_title = sprintf('%s -- Amplitude', desc_str);
   subplot(2, number_of_columns,1);
-  plot(t, u_amplitude);
+  plot(t, u_amplitude(1:end-diff_length));
   xlim([0, t(end)]);
   title(first_title);
 
   subplot(2, number_of_columns,2);
-  plot(t, u_phase);
+  plot(t, u_phase(1:end-diff_length));
   xlim([0, t(end)]);
 
 
   if do_freq_mod
     title('Phase (before frequency modulation)');
     subplot(2, number_of_columns,3);
-    plot(t, u_phase+u_freqmod);
+    combined = u_phase+u_freqmod;
+    plot(t, combined(1:end-diff_length));
     xlim([0, t(end)]);
     title('Phase (after frequency modulation)');
     xlabel('Signal duration tau');
 
     subplot(2, number_of_columns,4);
-    plot(t,f_signal);
+    plot(t,f_signal(1:end-diff_length));
     title('Frequency');
     xlim([0, t(end)]);
     ylabel('Frequency Hz');
@@ -140,7 +161,7 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   end
 
   figure;
-  plot(t,real(u));
+  plot(t,real(u(1:end-diff_length)));
   xlim([0, t(end)]);
   signal_title = sprintf('%s -- Full Signal', desc_str);
   title(signal_title);

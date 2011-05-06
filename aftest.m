@@ -6,10 +6,10 @@ carrier = 9.55e9;
 do_freq_mod = false;
 f_signal = [];
 fds = 10;
-fs = 1e5;
+fs = 2e5;
 
-%signal = [ +1 +1 +1 +1 +1 -1 -1 +1 +1 -1 +1 -1 +1];
-%af('Barker 13', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod,true);
+signal = [ +1 +1 +1 +1 +1 -1 -1 +1 +1 -1 +1 -1 +1];
+af('Barker 13', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod,true);
 
 signal = ones(1,13);
 B = 1e6;
@@ -18,7 +18,7 @@ f_factor = B/T;
 t = linspace(0,T,length(signal)*T*fs);
 f_signal=f_factor.*t;
 do_freq_mod = true;
-[AF u] = af('LFM', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod, false);
+%[AF u] = af('LFM', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod, false);
 
 %signal = ones(1,13);
 %B = 10e6;
