@@ -1,24 +1,24 @@
 clear all;
 close all;
-T = 200e-6;
-v_max = 1000;
+tau = 200e-6;
+v_max = 10000;
 carrier = 9.55e9;
-do_freq_mod = false;
+fds = 50;
 f_signal = [];
-fds = 10;
-fs = 2e5;
 
-signal = [ +1 +1 +1 +1 +1 -1 -1 +1 +1 -1 +1 -1 +1];
-af('Barker 13', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod,true);
+%fs = 2e6;
+%do_freq_mod = false;
+%signal = [ +1 +1 +1 +1 +1 -1 -1 +1 +1 -1 +1 -1 +1];
+%af('Barker 13', signal, tau, v_max, fds, carrier, fs, f_signal, do_freq_mod,true);
 
 signal = ones(1,13);
 B = 1e6;
-fs = 2e6;
-f_factor = B/T;
-t = linspace(0,T,length(signal)*T*fs);
-f_signal=f_factor.*t;
+fs = 5e6;
+N = tau*fs;
+n = 0:N-1;
+f_signal=B./N.*n./2;
 do_freq_mod = true;
-%[AF u] = af('LFM', signal, T, v_max, fds, carrier, fs, f_signal, do_freq_mod, false);
+af('LFM', signal, tau, v_max, fds, carrier, fs, f_signal, do_freq_mod, true);
 
 %signal = ones(1,13);
 %B = 10e6;

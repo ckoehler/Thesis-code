@@ -25,13 +25,14 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   m_orig = length(signal);
 
   % expand the signal for oversampling.
-  tempsignal = kron(signal,ones(1,N/m_orig));
-  diff_length = N-length(tempsignal)
+  tempsignal = kron(signal,ones(1,floor(N/m_orig)));
+
+  diff_length = uint32(N-length(tempsignal));
   signal = [tempsignal zeros(1,diff_length)];
   clear tempsignal;
 
   % time vector. We only need this for plotting.
-  t = linspace(0,tau,length(signal)-diff_length);
+  t = linspace(0,tau,length(signal));
 
   % frequency span
   f = linspace(0,f_max, m_orig*fds);
@@ -65,12 +66,11 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   u = u_amplitude .* u_exponent;
 
 
-
   if(do_af)
     % now create the signal sparse matrix. No. of rows
     % are the same as we would get from the convolution, i.e.
     % twice the signal length - 1, or 25 for a length 13 Barker code.
-    u_matrix = spdiags(u',0,m*2-1,m);
+    u_matrix = sparse(spdiags(u',0,m*2-1,m));
 
 
     % now we need to create a shifted matrix of u, where each row is the
@@ -81,34 +81,20 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
     u_padded = [zeros(1,m-1) u];
     shifted_u_matrix = sparse(hankel(u_padded));
     shifted_u_matrix = shifted_u_matrix(1:m,:);
-    'u matrix'
-    size(u_matrix)
-    'shifted'
-    size(shifted_u_matrix)
 
     u_correlation = u_matrix*shifted_u_matrix;
     u_correlation = u_correlation(1:m,:);
 
 
     % now we need to apply a Doppler shift to this thing. It's defined as:
-    u_shift = exp(j*2*pi*f'*n./fs);
+    %u_shift = exp(j*2*pi*f'*n./fs);
+    u_shift = exp(j*2*pi*f'*t);
 
-    'n'
-    size(n)
-    'f'
-    size(f)
-    'u shift'
-    size(u_shift)
-    'u correlation'
-    size(u_correlation)
     abs_af = abs(u_shift*u_correlation);
     abs_af = abs_af./max(max(abs_af));
     AF=abs_af(:,1:end-(2*diff_length));
-    'af'
-    size(AF)
+    t = t(1:end-diff_length);
     delay = [-fliplr(t) t(2:end)] * c;
-    'delay'
-    size(delay)
 
     % convert doppler frequency to velocity
     v = f .* c ./ carrier ./ 2;
@@ -126,6 +112,8 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
     %cmrow = [41	143	165] ./ 255;
     %cm=repmat(cmrow, [64 1]); 	
     %colormap(cm);
+  else
+    t = t(1:end-diff_length);
   end
 
   figure;
