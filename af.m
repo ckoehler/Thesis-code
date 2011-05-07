@@ -11,7 +11,7 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   AF = -1;
 
   % this is how many samples we need to use.
-  N = tau*fs;
+  N = tau*fs
 
   % this is the "time" sequence, just a sequence of samples.
   n = 0:N-1;
