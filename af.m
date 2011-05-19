@@ -1,4 +1,4 @@
-function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, do_freq_mod, do_af)
+function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, impulse_response, do_freq_mod, do_af)
   % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   %
@@ -9,6 +9,12 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   c = 3e8;
 
   AF = -1;
+
+  if ~isempty(impulse_response)
+    ir = true
+  else
+    ir = false
+  end
 
   % this is how many samples we need to use.
   N = tau*fs
@@ -31,9 +37,6 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   signal = [tempsignal zeros(1,diff_length)];
   clear tempsignal;
 
-  % time vector. We only need this for plotting.
-  t = linspace(0,tau,length(signal));
-
   % frequency span
   f = linspace(0,f_max, m_orig*fds);
     
@@ -52,7 +55,7 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
     % rebuild the bandwidth from the f_signal
     B = f_signal(end)-f_signal(1);
     t_str = sprintf('%s (tau=%3.3e s, f=%1.2f GHz, B = %3.2f MHz)      ', desc_str, tau, carrier./1e9, B./1e6);
-    number_of_columns = 2;
+    number_of_columns = 2
   else
     u_freqmod = 0;
     t_str = sprintf('%s (tau=%3.3e s, f=%1.2f GHz)      ', desc_str, tau, carrier./1e9);
@@ -66,21 +69,46 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   u = u_amplitude .* u_exponent;
 
 
+  % now take into account any distortion by an impulse response.
+  % For that, we oversample the IR we got to make it the same size as the
+  % signal we have now, and then simply convolve the two.
+  if ir
+    temp_ir = kron(impulse_response, ones(1, floor(N/m_orig)));
+    impulse_response = [temp_ir zeros(1, diff_length)];
+    u_pre = u;
+    u = conv(impulse_response,u);
+    new_m = length(u);
+  end
+
+  % time vector. We only need this for plotting.
+  t = linspace(0,tau,length(u));
+
   if(do_af)
     % now create the signal sparse matrix. No. of rows
     % are the same as we would get from the convolution, i.e.
     % twice the signal length - 1, or 25 for a length 13 Barker code.
-    u_matrix = sparse(spdiags(u',0,m*2-1,m));
-
+    if ir
+      u_matrix = sparse(spdiags(u',0,new_m*2-1,new_m));
+    else
+      u_matrix = sparse(spdiags(u',0,m*2-1,m));
+    end
 
     % now we need to create a shifted matrix of u, where each row is the
     % signal u shifted in time. To do that, we create a padded vector of
-    % u and then just look at parts of the Hankel matrix. It also takes
-    % care of getting the time-reversed signal so we get the correlation,
-    % not just convolution of the signal.
-    u_padded = [zeros(1,m-1) u];
-    shifted_u_matrix = sparse(hankel(u_padded));
-    shifted_u_matrix = shifted_u_matrix(1:m,:);
+    % u and then just look at parts of the Hankel matrix. 
+    if ir
+      u_padded = [zeros(1,(new_m-1)) u_pre];
+      shifted_u_matrix = sparse(hankel(u_padded));
+      shifted_u_matrix = shifted_u_matrix(1:new_m,:);
+    else
+      u_padded = [zeros(1,m-1) u];
+      shifted_u_matrix = sparse(hankel(u_padded));
+      shifted_u_matrix = shifted_u_matrix(1:m,:);
+    end
+    'u matrix'
+    size(u_matrix)
+    'shifted'
+    size(shifted_u_matrix)
 
     u_correlation = u_matrix*shifted_u_matrix;
     u_correlation = u_correlation(1:m,:);
@@ -89,6 +117,8 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
     % now we need to apply a Doppler shift to this thing. It's defined as:
     %u_shift = exp(j*2*pi*f'*n./fs);
     u_shift = exp(j*2*pi*f'*t);
+    'shift'
+    size(u_shift)
 
     abs_af = abs(u_shift*u_correlation);
     abs_af = abs_af./max(max(abs_af));
@@ -98,6 +128,9 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
 
     % convert doppler frequency to velocity
     v = f .* c ./ carrier ./ 2;
+    size(delay)
+    size(v)
+    size(AF)
 
     figure;
     surface(delay, v, AF);
@@ -149,6 +182,9 @@ function [AF u] = af(desc_str, signal, tau, v_max, fds, carrier, fs, f_signal, d
   end
 
   figure;
+  if ir
+    u = u_pre;
+  end
   plot(t,real(u(1:end-diff_length)));
   xlim([0, t(end)]);
   signal_title = sprintf('%s -- Full Signal', desc_str);
