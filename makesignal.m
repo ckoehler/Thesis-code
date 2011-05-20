@@ -1,4 +1,6 @@
-function signal = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
+function [signal ir_signal] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
+
+  ir_signal = [];
 
   debug = false;
   if ~debug
@@ -33,11 +35,11 @@ function signal = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
 
   if isempty(phase)
     m = length(amp);
-    phase = ones(1,m);
+    phase = zeros(1,m);
   end
 
   signal = amp .* exp(j.*phase);
-
+  
   if debug
     'amp'
     size(amp)
@@ -49,7 +51,7 @@ function signal = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
     ir
   end
 
-  % expand the signal for oversampling.
+  % expand the signal and impulse response for oversampling.
   tempsignal = kron(signal,ones(1,floor(N/m)));
 
   if debug
@@ -76,5 +78,11 @@ function signal = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
   % reassemble the signal
   signal = signal .* exp(j.*freq_mod);
   signal = signal(1:N-diff_length);
+
+  if ir
+    imp_resp = imp_resp ./ max(imp_resp);
+    imp_resp = kron(imp_resp, ones(1,floor(N/m)));
+    ir_signal = conv(signal, imp_resp);
+  end
 
 end
