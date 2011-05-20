@@ -87,6 +87,7 @@ function AF = af(signal, clean_signal, tau, v_max, fds, carrier)
   size(v)
 
   figure;
+  % TODO: need to adjust the delay. If we have an IR signal, the delay will be longer, tau*(2*m-1).
   %surface(delay, v, AF);
   surface(AF);
   view(-40,50);
