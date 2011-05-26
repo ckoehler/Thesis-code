@@ -1,5 +1,4 @@
-function AF = af(signal, clean_signal, tau, v_max, fds, carrier)
-  % Ambiguity function calculation
+function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier) % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   %
   % fs = Range dimension sampling frequency
@@ -22,8 +21,6 @@ function AF = af(signal, clean_signal, tau, v_max, fds, carrier)
   c = 3e8;
   % wavelength
   lam = c/carrier;
-  AF = -1;
-
 
   m = length(signal);
   m_clean = length(clean_signal);
@@ -32,9 +29,9 @@ function AF = af(signal, clean_signal, tau, v_max, fds, carrier)
   f_max = 2*v_max/lam;
 
   % frequency span
-  f = linspace(0,f_max, 100);
+  f = linspace(0,f_max, f_points);
     
-  % time vector. We only need this for plotting.
+  % time vector. Used for Doppler shift calculations.
   t = linspace(0,tau,m);
 
   rows = m*2-1;
@@ -55,93 +52,31 @@ function AF = af(signal, clean_signal, tau, v_max, fds, carrier)
   u_correlation = u_correlation(1:m,:);
 
   % if we have a signal distorted by an impulse response, the shifted_u_matrix
-  % is larger and has a bunch of leading 0. That will cause the result to be shifted
-  % as well, so here we correct for that. Conveniently, it's off by length of the clean
-  % signal, or m_clean.
+  % is larger and has a bunch of leading 0, exactly m_clean-1 zeros. That will cause the result to be shifted
+  % as well, so here we correct for that by chopping off m_clean-1 spots
   if ir
     u_correlation = u_correlation(:, m_clean:end);
   end
-  size(u_correlation)
 
 
   % now we need to apply a Doppler shift to this thing. It's defined as:
   %u_shift = exp(j*2*pi*f'*n./fs);
   u_shift = exp(j*2*pi*f'*t);
-  size(u_shift)
 
   abs_af = abs(u_shift*u_correlation);
 
+  AF = abs_af./max(max(abs_af));
 
-
-  %abs_af = u_correlation;
-  abs_af = abs_af./max(max(abs_af));
-  %AF=abs_af(:,1:end-(2*diff_length));
-  AF = abs_af;
-  size(AF)
-  %t = t(1:end-diff_length);
-  delay = [-fliplr(t) t(2:end)] * c;
-  size(delay)
+  % if we have an impulse response, we cut off some zeros from the AF earlier, so the delay axis needs
+  % to be recomputed. Since we cut off m_clean-1 points, our t-axis is now m-m_clean/2 points long, over
+  % the pulse length.
+  if ir
+    t = linspace(0, tau, m-m_clean/2);
+    delay = [-fliplr(t) t] * c;
+  else
+    delay = [-fliplr(t) t(2:end)] * c;
+  end
 
   % convert doppler frequency to velocity
   v = f .* c ./ carrier ./ 2;
-  size(v)
-
-  figure;
-  % TODO: need to adjust the delay. If we have an IR signal, the delay will be longer, tau*(2*m-1).
-  %surface(delay, v, AF);
-  surface(AF);
-  view(-40,50);
-  t_str = 'foo';
-  title(t_str,'FontSize',12);
-  xlabel('Range delay in m    ','FontSize',12);
-  ylabel('Radial velocity in m/s     ','FontSize',12);
-  zlabel('Normalized magnitude     ','FontSize',12);
-  axis([-inf inf -inf inf 0 1]);
-  shading flat;
-  %shading faceted;
-  %cmrow = [41	143	165] ./ 255;
-  %cm=repmat(cmrow, [64 1]); 	
-  %colormap(cm);
-
-  %figure;
-  %first_title = sprintf('%s -- Amplitude', desc_str);
-  %subplot(2, number_of_columns,1);
-  %plot(t, u_amplitude(1:end-diff_length));
-  %xlim([0, t(end)]);
-  %title(first_title);
-
-  %subplot(2, number_of_columns,2);
-  %plot(t, u_phase(1:end-diff_length));
-  %xlim([0, t(end)]);
-
-
-  %if do_freq_mod
-    %title('Phase (before frequency modulation)');
-    %subplot(2, number_of_columns,3);
-    %combined = u_phase+u_freqmod;
-    %plot(t, combined(1:end-diff_length));
-    %xlim([0, t(end)]);
-    %title('Phase (after frequency modulation)');
-    %xlabel('Signal duration tau');
-
-    %subplot(2, number_of_columns,4);
-    %plot(t,f_signal(1:end-diff_length));
-    %title('Frequency');
-    %xlim([0, t(end)]);
-    %ylabel('Frequency Hz');
-    %xlabel('Signal duration tau');
-  %else
-    %title('Phase');
-    %xlabel('Signal duration tau');
-  %end
-
-  %figure;
-  %if ir
-    %u = u_pre;
-  %end
-  %plot(t,real(u(1:end-diff_length)));
-  %xlim([0, t(end)]);
-  %signal_title = sprintf('%s -- Full Signal', desc_str);
-  %title(signal_title);
-  %xlabel('Signal duration tau');
 end

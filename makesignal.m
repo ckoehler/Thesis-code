@@ -1,4 +1,4 @@
-function [signal ir_signal] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
+function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
 
   ir_signal = [];
 
@@ -25,8 +25,6 @@ function [signal ir_signal] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs
 
   % this is the "time" sequence, just a sequence of samples.
   n = 0:N-1;
-
-
 
   if isempty(amp)
     m = length(phase);
@@ -59,7 +57,7 @@ function [signal ir_signal] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs
     size(tempsignal)
   end
 
-  diff_length = uint32(N-length(tempsignal));
+  diff_length = uint32(N-length(tempsignal))
   signal = [tempsignal zeros(1,diff_length)];
   clear tempsignal;
 
@@ -78,11 +76,13 @@ function [signal ir_signal] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs
   % reassemble the signal
   signal = signal .* exp(j.*freq_mod);
   signal = signal(1:N-diff_length);
+  new_tau = tau;
 
   if ir
     imp_resp = imp_resp ./ max(imp_resp);
     imp_resp = kron(imp_resp, ones(1,floor(N/m)));
     ir_signal = conv(signal, imp_resp);
+    new_tau = tau / length(signal) * length(ir_signal);
   end
 
 end
