@@ -57,13 +57,13 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
     size(tempsignal)
   end
 
-  diff_length = uint32(N-length(tempsignal))
+  diff_length = uint32(N-length(tempsignal));
   signal = [tempsignal zeros(1,diff_length)];
   clear tempsignal;
 
   if fm
     %u_phase = u_phase+pi.*f_signal.*t;
-    freq_mod = 2.*pi.*n./fs.*freq_mod;
+    freq_mod = (2.*pi.*n./fs.*freq_mod)
   else
     freq_mod = 0;
   end
