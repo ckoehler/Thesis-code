@@ -18,6 +18,14 @@ fs = 100e6;
 N = tau*fs;
 n = 0:N-1;
 f_signal=B./N.*n.^2./2;
+fig = figure;
+plot(f_signal);
+title('Frequency modulation function');
+ylabel('Frequency / Hz');
+filename = sprintf('../thesis/figures/%s-fmf.png', series_name);
+print(fig, '-dpng', '-r300', filename);
+
+
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz)      ', plot_title, tau, carrier./1e9);
