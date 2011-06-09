@@ -74,8 +74,6 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
   abs_af = abs(u_shift*u_correlation);
 
   AF = abs_af./max(max(abs_af));
-  AF = 10.*log10(AF);
-  AF(AF < -100) = NaN;
 
   % if we have an impulse response, we cut off some zeros from the AF earlier, so the delay axis needs
   % to be recomputed. Since we cut off m_clean-1 points, our t-axis is now m-m_clean/2 points long, over

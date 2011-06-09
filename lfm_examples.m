@@ -1,3 +1,4 @@
+clear all;
 close all;
 v_max = 50;
 carrier = 9.55e9;
