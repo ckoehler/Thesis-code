@@ -7,11 +7,11 @@ function fig = plotaf(t_str, delay,v,af)
   title(t_str,'FontSize',12);
   xlabel('Range delay in m    ','FontSize',12);
   ylabel('Radial velocity in m/s     ','FontSize',12);
-  zlabel('Normalized magnitude     ','FontSize',12);
-  axis([-inf inf -inf inf 0 1]);
+  zlabel('Normalized magnitude in dB    ','FontSize',12);
+  axis([-inf inf -inf inf -inf 0]);
   shading flat;
-  %shading faceted;
-  %cmrow = [41	143	165] ./ 255;
-  %cm=repmat(cmrow, [64 1]); 	
-  %colormap(cm);
+  shading faceted;
+  cmrow = [41	143	165] ./ 255;
+  cm=repmat(cmrow, [64 1]); 	
+  colormap(cm);
 end

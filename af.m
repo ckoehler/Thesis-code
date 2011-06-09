@@ -1,4 +1,4 @@
-function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier) % Ambiguity function calculation
+function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, full_af) % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   %
   % fs = Range dimension sampling frequency
@@ -16,6 +16,10 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier) 
     ir=true;
   end
 
+  if nargin < 7
+    full_af=false;
+  end
+
 
   % speed of light
   c = 3e8;
@@ -29,7 +33,11 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier) 
   f_max = 2*v_max/lam;
 
   % frequency span
-  f = linspace(0,f_max, f_points);
+  if full_af
+    f = linspace(-f_max,f_max, 2*f_points);
+  else
+    f = linspace(0,f_max, f_points);
+  end
     
   % time vector. Used for Doppler shift calculations.
   t = linspace(0,tau,m);
@@ -66,6 +74,8 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier) 
   abs_af = abs(u_shift*u_correlation);
 
   AF = abs_af./max(max(abs_af));
+  AF = 10.*log10(AF);
+  AF(AF < -100) = NaN;
 
   % if we have an impulse response, we cut off some zeros from the AF earlier, so the delay axis needs
   % to be recomputed. Since we cut off m_clean-1 points, our t-axis is now m-m_clean/2 points long, over
