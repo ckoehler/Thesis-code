@@ -7,19 +7,19 @@ plot_title = 'LFM ISL';
 f_points = 100;
 impulse_response = [];
 phase = [];
-B = 1e6;
+B = 5e6;
 tau = 15e-6;
-fs = 10e6;
+fs = 5e6;
 N = tau*fs;
-n = 0:N-1;
+n = -N/2:N/2-1;
 f_signal=B./N.*n./2;
 
-points = 50;
+points = 100;
 isls=zeros(points,1);
 max_sidelobes=zeros(points,1);
 ress=[];
 
-kaiser_params = linspace(0,15,points);
+kaiser_params = linspace(0,50,points);
 
 for i=1:length(kaiser_params)
   amp = kaiser(13, kaiser_params(i))';
