@@ -8,7 +8,7 @@ function fig = plotaf(t_str, delay,v,af)
   xlabel('Range delay in m    ','FontSize',12);
   ylabel('Radial velocity in m/s     ','FontSize',12);
   zlabel('Normalized magnitude in dB    ','FontSize',12);
-  axis([-inf inf -inf inf -inf 0]);
+  %axis([-inf inf -inf inf -inf inf]);
   shading flat;
   shading faceted;
   cmrow = [41	143	165] ./ 255;
