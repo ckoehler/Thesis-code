@@ -4,25 +4,31 @@ v_max = 50;
 carrier = 9.55e9;
 series_name = 'lfm-isl';
 plot_title = 'LFM ISL';
-lim = 1000;
-
-
 f_points = 100;
 impulse_response = [];
-amp = ones(1,13);
 phase = [];
 B = 1e6;
-
 tau = 15e-6;
-fs = 5e6;
+fs = 10e6;
 N = tau*fs;
 n = 0:N-1;
 f_signal=B./N.*n./2;
 
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
+points = 50;
+isls=zeros(points,1);
+max_sidelobes=zeros(points,1);
+ress=[];
 
-sliceaf = sum(the_af);
-sliceaf = 10*log10(sliceaf/max(sliceaf));
-sliceaf(sliceaf < -100)=NaN;
-plot(sliceaf);
+kaiser_params = linspace(0,15,points);
+
+for i=1:length(kaiser_params)
+  amp = kaiser(13, kaiser_params(i))';
+  [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+  [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
+
+  %fig = plotaf('', delay, v, the_af);
+  [isls(i) max_sidelobes(i)] = isl(the_af);
+  ress(i,:) = res(the_af, delay(2)-delay(1));
+end
+
+plotopti(kaiser_params, isls, ress,max_sidelobes);

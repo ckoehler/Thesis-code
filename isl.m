@@ -1,31 +1,39 @@
-function [res the_min the_max] = isl(af)
+function [res max_sidelobe the_min the_max] = isl(af)
 
-  sliceaf = sum(af);
-
+  sidelobes = 0;
+  sidelobes1 = 0;
+  mainlobe = 0;
   s = size(af);
-  for jj=1:s(2)
+  max_sidelobe = 0;
 
+  % loop across the Doppler axis
+  for jj=1:s(1)
 
-  the_diff = diff(sliceaf);
-
-  l = length(the_diff);
-  [~, mid] = max(sliceaf);
-  the_max = 0;
-  the_min = 0;
-  for ii=mid:l
-    if the_diff(ii) > 0
-      the_max = ii;
-      break;
+    % figure out the mainlobe boundary for this slice
+    the_diff = diff(af(jj,:));
+    l = length(the_diff);
+    [~, mid] = max(af(jj,:));
+    the_max = 0;
+    the_min = 0;
+    for ii=mid:l
+      if the_diff(ii) > 0
+        the_max = ii;
+        break;
+      end
     end
-  end
-  for ii=mid-1:-1:0
-    if the_diff(ii) < 0
-      the_min = ii;
-      break;
+    for ii=mid-1:-1:1
+      if the_diff(ii) < 0
+        the_min = ii;
+        break;
+      end
     end
-  end
 
-  sidelobes = sum(sliceaf(1:the_min)) + sum(sliceaf(the_max+1:end));
-  mainlobe = sum(sliceaf(the_min+1:the_max));
+    sidelobes_only = [af(jj, 1:the_min) af(jj, the_max+1:end)];
+    max_sidelobe = max(max(sidelobes_only), max_sidelobe);
+
+    % compute side and mainlobe, and add them all up.
+    sidelobes = sidelobes + sum(sidelobes_only);
+    mainlobe = mainlobe + sum(af(jj,the_min+1:the_max));
+  end
   res = 10*log10(mainlobe/sidelobes);
 end
