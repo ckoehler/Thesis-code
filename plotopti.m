@@ -1,6 +1,6 @@
 function plotopti(x, isls, ress, max_sidelobes)
 
-  figure;
+  fig = figure;
   subplot(3,1,1);
   plot(x,isls);
   title('Integrated Sidelobe Levels');
@@ -20,5 +20,7 @@ function plotopti(x, isls, ress, max_sidelobes)
   ylabel('Spatial delay in m');
   xlabel('Parameter');
   %surface(kaiser_params, v, ress');
+
+  %print(fig, '-dpng', '-r300', 'test.png');
 
 end
