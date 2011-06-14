@@ -14,10 +14,9 @@ phase = [];
 B = 5e6;
 
 tau = 15e-6;
-fs = 5e6;
+fs = 1e7;
 N = tau*fs;
-n = -N/2:N/2-1;
-f_signal=B./N.*n./2;
+f_signal = linspace(-B/2, B/2, N);
 fig = figure;
 plot(f_signal);
 title('Frequency modulation function');
@@ -35,10 +34,9 @@ filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
 tau = 200e-6;
-fs = 1e7;
+fs = 1e6;
 N = tau*fs;
-n = -N/2:N/2-1;
-f_signal=B./N.*n./2;
+f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz)      ', plot_title, tau, carrier./1e9);
@@ -54,8 +52,7 @@ window = 'Hamming';
 tau = 15e-6;
 fs = 1e7;
 N = tau*fs;
-n = -N/2:N/2-1;
-f_signal=B./N.*n./2;
+f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
@@ -65,10 +62,9 @@ filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,windo
 print(fig, '-dpng', '-r300', filename);
 
 tau = 200e-6;
-fs = 1e7;
+fs = 1e6;
 N = tau*fs;
-n = -N/2:N/2-1;
-f_signal=B./N.*n./2;
+f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
