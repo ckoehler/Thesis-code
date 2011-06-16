@@ -1,7 +1,7 @@
 function fig = plotaf(t_str, delay,v,af)
   fig = figure;
 
-  %af=20*log10(af);
+  af=20*log10(af);
   surface(delay, v, af);
   view(-40,50);
   title(t_str,'FontSize',12);

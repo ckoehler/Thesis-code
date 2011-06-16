@@ -9,26 +9,27 @@ impulse_response = [];
 phase = [];
 B = 5e6;
 tau = 15e-6;
-fs = 5e6;
+fs = 2e7;
 N = tau*fs;
-n = -N/2:N/2-1;
-f_signal=B./N.*n./2;
+f_signal = linspace(-B/2,B/2,N);
 
 points = 100;
 isls=zeros(points,1);
 max_sidelobes=zeros(points,1);
 ress=[];
+ppps=[];
 
 kaiser_params = linspace(0,50,points);
 
 for i=1:length(kaiser_params)
-  amp = kaiser(13, kaiser_params(i))';
+  amp = kaiser(N, kaiser_params(i))';
   [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
   [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
 
   %fig = plotaf('', delay, v, the_af);
   [isls(i) max_sidelobes(i)] = isl(the_af);
   ress(i,:) = res(the_af, delay(2)-delay(1));
+  ppps(i,:) = ppp(amp);
 end
 
-plotopti(kaiser_params, isls, ress,max_sidelobes);
+plotopti(kaiser_params, isls, ress,max_sidelobes, ppps);
