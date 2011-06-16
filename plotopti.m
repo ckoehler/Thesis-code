@@ -1,4 +1,4 @@
-function plotopti(x, isls, ress, max_sidelobes)
+function fig=plotopti(x, isls, ress, max_sidelobes)
 
   fig = figure;
   subplot(3,1,1);
@@ -16,7 +16,7 @@ function plotopti(x, isls, ress, max_sidelobes)
 
   subplot(3,1,3);
   plot(x,ress(:,1));
-  title('3dB Beamwidth');
+  title('3dB Range Resolution');
   ylabel('Spatial delay in m');
   xlabel('Parameter');
   %surface(kaiser_params, v, ress');

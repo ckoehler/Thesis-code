@@ -1,8 +1,8 @@
 function fig = plotaf(t_str, delay,v,af)
   fig = figure;
-  % TODO: need to adjust the delay. If we have an IR signal, the delay will be longer, tau*(2*m-1).
+
+  %af=20*log10(af);
   surface(delay, v, af);
-  %surface(AF);
   view(-40,50);
   title(t_str,'FontSize',12);
   xlabel('Range delay in m    ','FontSize',12);

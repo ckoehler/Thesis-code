@@ -1,7 +1,6 @@
-function f=generate_arbitrary_fm(tau, fs, a,b, c)
+function f=generate_arbitrary_fm(tau, fs, a)
   N = tau*fs;
   n = linspace(-1,1,N);
-  x = c.*n.^7 + a.*n.^3 + b.*n;
-  x = x./(max(abs(x)));
-  f = x;
+  x = a.*n.^7 + n;
+  f = x./(max(abs(x)));
 end

@@ -63,7 +63,7 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
 
   if fm
     %freq_mod = (2.*pi.*n./fs.*freq_mod);
-    freq_mod = 2.*pi.*cumsum(freq_mod);
+    freq_mod = 2.*pi.*cumsum(freq_mod./fs);
   else
     freq_mod = 0;
   end

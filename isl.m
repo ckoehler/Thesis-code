@@ -1,7 +1,6 @@
 function [res max_sidelobe the_min the_max] = isl(af)
 
   sidelobes = 0;
-  sidelobes1 = 0;
   mainlobe = 0;
   s = size(af);
   max_sidelobe = 0;
@@ -35,5 +34,5 @@ function [res max_sidelobe the_min the_max] = isl(af)
     sidelobes = sidelobes + sum(sidelobes_only);
     mainlobe = mainlobe + sum(af(jj,the_min+1:the_max));
   end
-  res = 10*log10(mainlobe/sidelobes);
+  res = 10*log10(sidelobes/mainlobe);
 end
