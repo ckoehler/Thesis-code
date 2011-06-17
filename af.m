@@ -69,7 +69,7 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
 
   % now we need to apply a Doppler shift to this thing. It's defined as:
   %u_shift = exp(j*2*pi*f'*n./fs);
-  u_shift = exp(j*2*pi*f'*t);
+  u_shift = exp(-j*2*pi*f'*t);
 
   abs_af = abs(u_shift*u_correlation);
 
