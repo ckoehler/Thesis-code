@@ -7,13 +7,13 @@ impulse_response = [];
 phase = [];
 B = 5e6;
 tau = 15e-6;
-fs = 1.5e7;
+fs = 1e7;
 N = tau*fs;
 
-a = (linspace(0,10,100));
+a = (linspace(0,10,70));
 
-points = 100;
-kaiser_params = linspace(0,50,points);
+points = 40;
+kaiser_params = linspace(0,20,points);
 
 
 
@@ -35,6 +35,7 @@ for i=1:length(a)
     vs(i,j,:)=v;
     afs(i,j,:,:)=the_af;
   end
+  i
 end
 
 save('nlfm_kaiser.mat', 'delays','vs','afs','a','tau','kaiser_params');
