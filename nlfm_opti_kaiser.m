@@ -34,10 +34,10 @@ end
 
 [fisl, fres,fmsl, fppr] = plotopti2d(a, kaiser_params, isls, ress,max_sidelobes, ppps);
 filename = sprintf('../thesis/figures/%s-%ius-opti-isl.png', series_name,tau*1e6);
-print(fig, '-dpng', '-r300', filename);
+print(fisl, '-dpng', '-r300', filename);
 filename = sprintf('../thesis/figures/%s-%ius-opti-res.png', series_name,tau*1e6);
-print(fig, '-dpng', '-r300', filename);
+print(fres, '-dpng', '-r300', filename);
 filename = sprintf('../thesis/figures/%s-%ius-opti-msl.png', series_name,tau*1e6);
-print(fig, '-dpng', '-r300', filename);
+print(fmsl, '-dpng', '-r300', filename);
 filename = sprintf('../thesis/figures/%s-%ius-opti-ppr.png', series_name,tau*1e6);
-print(fig, '-dpng', '-r300', filename);
+print(fppr, '-dpng', '-r300', filename);
