@@ -1,8 +1,8 @@
 function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
 
   if nargin == 4
-    rows = 1;
-    cols = 3;
+    rows = 3;
+    cols = 1;
     ppp = false;
   else
     cols = 2;

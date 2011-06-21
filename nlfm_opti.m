@@ -1,6 +1,6 @@
 close all;
 clear all;
-% gets us: a, afs, delays, vs
+% gets us: a, afs, delays, vs, tau
 load 'nlfm.mat';
 series_name='nlfm-side';
 
@@ -9,6 +9,7 @@ max_sidelobes=[];
 ress=[];
 l = size(vs);
 screen=[1 6 7 8 9 10 11 12 13 60 100];
+screen=[];
 for i=1:l(1)
   af = squeeze(afs(i,:,:));
   [isls(i) max_sidelobes(i)] = isl(af);

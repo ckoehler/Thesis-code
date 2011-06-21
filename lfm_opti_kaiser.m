@@ -32,4 +32,6 @@ for i=1:length(kaiser_params)
   ppps(i,:) = ppp(amp);
 end
 
-plotopti(kaiser_params, isls, ress,max_sidelobes, ppps);
+fig = plotopti(kaiser_params, isls, ress,max_sidelobes, ppps);
+filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
