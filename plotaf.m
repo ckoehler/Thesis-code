@@ -1,6 +1,14 @@
 function fig = plotaf(t_str, delay,v,af)
   fig = figure;
 
+  l = size(af);
+  s = length(delay);
+
+  % if for some reason the dimensions don't quite match up, slice the af to make 
+  % it fit.
+  if l(2) ~= s
+    af = af(:,1:s);
+  end
   af=20*log10(af);
   surface(delay, v, af);
   view(-40,50);

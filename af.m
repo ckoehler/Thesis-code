@@ -80,9 +80,9 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
   % the pulse length.
   if ir
     t = linspace(0, tau, m-m_clean/2);
-    delay = [-fliplr(t) t] * c;
+    delay = [-fliplr(t) t] * c / 2;
   else
-    delay = [-fliplr(t) t(2:end)] * c;
+    delay = [-fliplr(t) t(2:end)] * c / 2;
   end
 
   % convert doppler frequency to velocity
