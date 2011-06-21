@@ -6,7 +6,7 @@ carrier = 9.55e9;
 
 tau = 200e-6;
 amp = ones(1,13);
-fs = 2e6;
+fs = 1e5;
 f_points = 100;
 impulse_response = [];
 [clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);

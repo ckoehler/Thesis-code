@@ -33,11 +33,10 @@ fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
-return;
 
 
 tau = 200e-6;
-fs = 1e6;
+fs = 1e7;
 N = tau*fs;
 f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
