@@ -1,6 +1,6 @@
 %clear all;
 close all;
-v_max = 500;
+v_max = 50;
 carrier = 9.55e9;
 series_name = 'lfm';
 plot_title = 'LFM';
@@ -34,9 +34,13 @@ xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
+fig = plotafslice(1,t_str, delay,the_af);
+filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
+
 
 tau = 200e-6;
-fs = 1e7;
+fs = 1.5e7;
 N = tau*fs;
 f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
@@ -47,13 +51,17 @@ xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
+fig = plotafslice(1,t_str, delay,the_af);
+filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
 
-amp = hamming(13)';
+
 window = 'Hamming';
 
 tau = 15e-6;
-fs = 1e7;
+fs = 2e7;
 N = tau*fs;
+amp = hamming(N)';
 f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
@@ -63,9 +71,14 @@ xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
 print(fig, '-dpng', '-r300', filename);
 
+fig = plotafslice(1,t_str, delay,the_af);
+filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
+print(fig, '-dpng', '-r300', filename);
+
 tau = 200e-6;
-fs = 1e6;
+fs = 1.2e7;
 N = tau*fs;
+amp = hamming(N)';
 f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);
@@ -73,4 +86,8 @@ t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title,
 fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
+print(fig, '-dpng', '-r300', filename);
+
+fig = plotafslice(1,t_str, delay,the_af);
+filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
 print(fig, '-dpng', '-r300', filename);

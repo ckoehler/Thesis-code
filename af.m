@@ -54,7 +54,7 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
   % u and then just look at parts of the Hankel matrix. 
   u_padded = [zeros(1,rows-m_clean) clean_signal];
   shifted_u_matrix = sparse(hankel(u_padded));
-  shifted_u_matrix = shifted_u_matrix(1:m,:);
+  shifted_u_matrix = fliplr(shifted_u_matrix(1:m,:));
 
   u_correlation = u_matrix*shifted_u_matrix;
   u_correlation = u_correlation(1:m,:);

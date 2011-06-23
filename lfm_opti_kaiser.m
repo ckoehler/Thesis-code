@@ -20,11 +20,18 @@ ress=[];
 ppps=[];
 
 kaiser_params = linspace(0,50,points);
+the_slice = 13;
 
 for i=1:length(kaiser_params)
   amp = kaiser(N, kaiser_params(i))';
   [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
   [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
+
+  if i==the_slice
+    fig = plotafslice(1, 'Windowed AF with PPR=3 dB', delay, the_af);
+    filename = sprintf('../thesis/figures/%s-%ius-opti-slice%i.png', series_name,tau*1e6,i);
+    print(fig, '-dpng', '-r300', filename);
+  end
 
   %fig = plotaf('', delay, v, the_af);
   [isls(i) max_sidelobes(i)] = isl(the_af);
@@ -35,3 +42,4 @@ end
 fig = plotopti(kaiser_params, isls, ress,max_sidelobes, ppps);
 filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
+
