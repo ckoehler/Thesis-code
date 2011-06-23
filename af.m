@@ -1,4 +1,5 @@
-function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, full_af) % Ambiguity function calculation
+function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, full_af) 
+  % Ambiguity function calculation
   % ambiguity function is af(t,f) = sum_over_t(u(t) * u'(t-tau) * exp(j*2*pi*f*t))
   %
   % fs = Range dimension sampling frequency
@@ -60,8 +61,9 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
   u_correlation = u_correlation(1:m,:);
 
   % if we have a signal distorted by an impulse response, the shifted_u_matrix
-  % is larger and has a bunch of leading 0, exactly m_clean-1 zeros. That will cause the result to be shifted
-  % as well, so here we correct for that by chopping off m_clean-1 spots
+  % is larger and has a bunch of leading 0, exactly m_clean-1 zeros. That will 
+  % cause the result to be shifted as well, so here we correct for that by chopping
+  % off m_clean-1 spots.
   if ir
     u_correlation = u_correlation(:, m_clean:end);
   end
@@ -75,9 +77,9 @@ function [delay v AF] = af(signal, clean_signal, tau, v_max, f_points, carrier, 
 
   AF = abs_af./max(max(abs_af));
 
-  % if we have an impulse response, we cut off some zeros from the AF earlier, so the delay axis needs
-  % to be recomputed. Since we cut off m_clean-1 points, our t-axis is now m-m_clean/2 points long, over
-  % the pulse length.
+  % if we have an impulse response, we cut off some zeros from the AF earlier, so the
+  % delay axis needs to be recomputed. Since we cut off m_clean-1 points, our t-axis is
+  % now m-m_clean/2 points long, over the pulse length.
   if ir
     t = linspace(0, tau, m-m_clean/2);
     delay = [-fliplr(t) t] * c / 2;
