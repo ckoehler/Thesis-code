@@ -9,13 +9,13 @@ lim = inf;
 
 f_points = 100;
 impulse_response = [];
-amp = ones(1,13);
 phase = [];
 B = 5e6;
 
 tau = 15e-6;
 fs = 8e7;
 N = tau*fs;
+amp = ones(1,N);
 %f_signal = (0:(N-1))/N*B - B/2;
 f_signal = linspace(-B/2,B/2,N);
 fig = figure;
@@ -42,6 +42,7 @@ print(fig, '-dpng', '-r300', filename);
 tau = 200e-6;
 fs = 1.5e7;
 N = tau*fs;
+amp = ones(1,N);
 f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier);

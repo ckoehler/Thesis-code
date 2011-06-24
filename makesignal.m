@@ -20,12 +20,6 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
   end
 
 
-  % this is how many samples we need to use.
-  N = tau*fs;
-
-  % this is the "time" sequence, just a sequence of samples.
-  n = 0:N-1;
-
   if isempty(amp)
     m = length(phase);
     amp = ones(1,m);
@@ -44,22 +38,10 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
     'phase'
     size(phase)
     m
-    N
     fm
     ir
   end
 
-  % expand the signal and impulse response for oversampling.
-  tempsignal = kron(signal,ones(1,floor(N/m)));
-
-  if debug
-    'tempsignal'
-    size(tempsignal)
-  end
-
-  diff_length = uint32(N-length(tempsignal));
-  signal = [tempsignal zeros(1,diff_length)];
-  clear tempsignal;
 
   if fm
     %freq_mod = (2.*pi.*n./fs.*freq_mod);
@@ -75,12 +57,10 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
 
   % reassemble the signal
   signal = signal .* exp(j.*freq_mod);
-  signal = signal(1:N-diff_length);
   new_tau = tau;
 
   if ir
     imp_resp = imp_resp ./ max(imp_resp);
-    imp_resp = kron(imp_resp, ones(1,floor(N/m)));
     ir_signal = conv(signal, imp_resp);
     new_tau = tau / length(signal) * length(ir_signal);
   end
