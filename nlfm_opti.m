@@ -25,6 +25,5 @@ for i=1:l(1)
 end
 
 fig = plotopti(a, isls, ress,max_sidelobes);
-filename = '';
 filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);

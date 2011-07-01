@@ -40,7 +40,7 @@ print(fig, '-dpng', '-r300', filename);
 
 
 tau = 200e-6;
-fs = 1.5e7;
+fs = 1e8;
 N = tau*fs;
 amp = ones(1,N);
 f_signal = linspace(-B/2, B/2, N);
@@ -57,38 +57,38 @@ filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
 
-window = 'Hamming';
+%window = 'Hamming';
 
-tau = 15e-6;
-fs = 2e7;
-N = tau*fs;
-amp = hamming(N)';
-f_signal = linspace(-B/2, B/2, N);
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
-t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
-fig = plotaf(t_str, delay,v,the_af);
-xlim([-lim lim]);
-filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
-print(fig, '-dpng', '-r300', filename);
+%tau = 15e-6;
+%fs = 2e7;
+%N = tau*fs;
+%amp = hamming(N)';
+%f_signal = linspace(-B/2, B/2, N);
+%[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+%[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+%t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
+%fig = plotaf(t_str, delay,v,the_af);
+%xlim([-lim lim]);
+%filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
+%print(fig, '-dpng', '-r300', filename);
 
-fig = plotafslice(1,t_str, delay,the_af);
-filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
-print(fig, '-dpng', '-r300', filename);
+%fig = plotafslice(1,t_str, delay,the_af);
+%filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
+%print(fig, '-dpng', '-r300', filename);
 
-tau = 200e-6;
-fs = 1.2e7;
-N = tau*fs;
-amp = hamming(N)';
-f_signal = linspace(-B/2, B/2, N);
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
-t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
-fig = plotaf(t_str, delay,v,the_af);
-xlim([-lim lim]);
-filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
-print(fig, '-dpng', '-r300', filename);
+%tau = 200e-6;
+%fs = 1.2e7;
+%N = tau*fs;
+%amp = hamming(N)';
+%f_signal = linspace(-B/2, B/2, N);
+%[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+%[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+%t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz, %s window)      ', plot_title, tau, carrier./1e9,window);
+%fig = plotaf(t_str, delay,v,the_af);
+%xlim([-lim lim]);
+%filename = sprintf('../thesis/figures/%s-%ius-%s.png', series_name,tau*1e6,window);
+%print(fig, '-dpng', '-r300', filename);
 
-fig = plotafslice(1,t_str, delay,the_af);
-filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
-print(fig, '-dpng', '-r300', filename);
+%fig = plotafslice(1,t_str, delay,the_af);
+%filename = sprintf('../thesis/figures/%s-%ius-%s-0D.png', series_name,tau*1e6,window);
+%print(fig, '-dpng', '-r300', filename);

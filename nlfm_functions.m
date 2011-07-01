@@ -1,10 +1,22 @@
-f = generate_arbitrary_fm(1,200,0);
-g = generate_arbitrary_fm(1,200,10);
-subplot(2,1,1);
-plot(f);
-title('Non-Linear Frequency Modulation, a=0');
-subplot(2,1,2);
-plot(g);
-title('Non-Linear Frequency Modulation, a=10');
-print('-dpng', '-r300', '../thesis/figures/nlfm-functions.png');
+N=6;
+points = 100;
+fontsize=12;
+a_param = linspace(0,10,N);
+s = cell(1,N);
+C = [1 0 0; 1 1 0; 0 1 0; 0 1 1; 0 0 1; 1 0 1];
+fig = figure;
+hold on;
+for i=1:length(a_param)
+  f = generate_arbitrary_fm(1,200,a_param(i));
+  h(i) = plot(f, 'Color', C(i, :));
+  s{i} = sprintf('a = %d', a_param(i));
+end
+ind = [1 2 3 4 5 6];
+legend(h(ind),s{ind}, 'Location', 'Best');
+title('Non-Linear Frequency Modulation', 'FontSize', fontsize);
+xlabel('Data points    ', 'FontSize',fontsize);
+
+filename = '../thesis/figures/nlfm-functions.png';
+print(fig, '-dpng', '-r300', filename);
+
 

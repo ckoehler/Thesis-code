@@ -25,7 +25,7 @@ the_slice = 13;
 for i=1:length(kaiser_params)
   amp = kaiser(N, kaiser_params(i))';
   [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-  [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
+  [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
 
   if i==the_slice
     fig = plotafslice(1, 'Windowed AF with PPR=3 dB', delay, the_af);

@@ -1,5 +1,6 @@
 function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
 
+  fontsize = 12;
   if nargin == 4
     rows = 3;
     cols = 1;
@@ -13,29 +14,29 @@ function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
   fig = figure;
   subplot(rows,cols,1);
   plot(x,isls);
-  title('Integrated Sidelobe Levels');
+  title('Integrated Sidelobe Levels     ', 'FontSize', fontsize);
   ylabel('dB');
 
 
   subplot(rows, cols,2);
   plot(x,10*log10(max_sidelobes));
-  title('Maximum Sidelobe Levels');
+  title('Maximum Sidelobe Levels     ', 'FontSize', fontsize);
   ylabel('dB');
 
 
 
   subplot(rows,cols,3);
   plot(x,ress(:,1));
-  title('3dB Range Resolution');
-  ylabel('Spatial delay in m');
-  xlabel('Parameter');
+  title('3dB Range Resolution     ', 'FontSize', fontsize);
+  ylabel('Spatial delay in m     ', 'FontSize', fontsize);
+  xlabel('Parameter     ', 'FontSize', fontsize);
 
   if ppp
     subplot(rows,cols,4);
     plot(x,ppps);
-    title('Pulse Power Ratio');
-    ylabel('Ratio');
-    xlabel('Parameter');
+    title('Pulse Power Ratio     ', 'FontSize', fontsize);
+    ylabel('Ratio     ', 'FontSize', fontsize);
+    xlabel('Parameter     ', 'FontSize', fontsize);
   end
 
 end
