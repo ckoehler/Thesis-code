@@ -7,13 +7,12 @@ plot_title = 'LFM';
 lim = 1000;
 f_points = 100;
 impulse_response = [];
-amp = ones(1,13);
-%amp=kaiser(13,2);
 phase = [];
 B = 5e6;
 tau = 15e-6;
 fs = 1e7;
 N = tau*fs;
+amp = ones(1,N);
 
 a = (linspace(0,10,100));
 
@@ -24,7 +23,7 @@ for i=1:length(a)
   f_signal = B/2.* generate_arbitrary_fm(tau, fs, a(i));
 
   [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-  [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
+  [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
   delays(i,:)=delay;
   vs(i,:)=v;
   afs(i,:,:)=the_af;

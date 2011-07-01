@@ -30,7 +30,7 @@ for i=1:length(a)
     amp = kaiser(N, kaiser_params(j))';
 
     [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-    [delay v the_af] = af(signal, clean_signal, new_tau, v_max, f_points, carrier, true);
+    [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
     delays(i,j,:)=delay;
     vs(i,j,:)=v;
     afs(i,j,:,:)=the_af;

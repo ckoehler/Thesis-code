@@ -33,7 +33,7 @@ function [delay v af] = af(signal, clean_signal, tau, fs, v_max, f_points, carri
   af = [];
   
   % convert v_max to a frequency
-  f_max = v_max/lam
+  f_max = v_max/lam;
 
   % frequency span
   if full_af
