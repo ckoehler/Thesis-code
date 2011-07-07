@@ -27,3 +27,8 @@ end
 fig = plotopti(a, isls, ress,max_sidelobes);
 filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
+
+theslice=30;
+fig = plotafslice(theslice,'NLFM zero-Doppler slice', delays(theslice,:),squeeze(afs(theslice,:,:)));
+filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);

@@ -10,7 +10,7 @@ impulse_response = [];
 phase = [];
 B = 5e6;
 tau = 15e-6;
-fs = 1e7;
+fs = 1e8;
 N = tau*fs;
 amp = ones(1,N);
 
