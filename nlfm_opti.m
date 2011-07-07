@@ -29,6 +29,17 @@ filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
 theslice=30;
-fig = plotafslice(theslice,'NLFM zero-Doppler slice', delays(theslice,:),squeeze(afs(theslice,:,:)));
-filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
+thea = a(theslice);
+t_str = '';
+t_str = sprintf('NLFM zero-Doppler slice for a=%f', thea);
+fig = plotafslice(1,t_str, delays(theslice,:),squeeze(afs(theslice,:,:)));
+filename = sprintf('../thesis/figures/%s-%ius-0D-1.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
+
+theslice=65;
+thea = a(theslice);
+t_str = '';
+t_str = sprintf('NLFM zero-Doppler slice for a=%f', thea);
+fig = plotafslice(1,t_str, delays(theslice,:),squeeze(afs(theslice,:,:)));
+filename = sprintf('../thesis/figures/%s-%ius-0D-2.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);

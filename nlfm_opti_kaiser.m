@@ -1,3 +1,5 @@
+clear all;
+close all;
 load('nlfm2dopti.mat');
 [fisl, fres,fmsl, fppr] = plotopti2d(a, kaiser_params, isls, ress,max_sidelobes, ppps);
 filename = sprintf('../thesis/figures/%s-%ius-opti-isl.png', series_name,tau*1e6);
