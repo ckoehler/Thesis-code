@@ -29,14 +29,14 @@ function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
   plot(x,ress(:,1));
   title('3dB Range Resolution     ', 'FontSize', fontsize);
   ylabel('Spatial delay in m     ', 'FontSize', fontsize);
-  xlabel('Parameter     ', 'FontSize', fontsize);
+  xlabel('\beta     ', 'FontSize', fontsize);
 
   if ppp
     subplot(rows,cols,4);
     plot(x,ppps);
     title('Pulse Power Ratio     ', 'FontSize', fontsize);
     ylabel('Ratio     ', 'FontSize', fontsize);
-    xlabel('Parameter     ', 'FontSize', fontsize);
+    xlabel('\beta     ', 'FontSize', fontsize);
   end
 
 end

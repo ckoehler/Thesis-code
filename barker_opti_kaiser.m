@@ -23,7 +23,7 @@ max_sidelobes=zeros(points,1);
 ress=[];
 ppps=[];
 
-the_slice = 4000;
+the_slice = 3;
 
 kaiser_params = linspace(0,20,points);
 
@@ -33,7 +33,7 @@ for i=1:length(kaiser_params)
   [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
 
   if i==the_slice
-    fig = plotafslice(1, 'Windowed AF with PPR=3 dB', delay, the_af);
+    fig = plotafslice(1, 'Windowed Barker at minimum ISL', delay, the_af);
     filename = sprintf('../thesis/figures/%s-%ius-opti-slice%i.png', series_name,tau*1e6,i);
     print(fig, '-dpng', '-r300', filename);
   end

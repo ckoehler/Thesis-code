@@ -15,7 +15,7 @@ amp = ones(1,N);
 [clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
 t_str = sprintf('Simple pulse ( \\tau=%3.3e s, f=%1.2f GHz)      ', tau, carrier./1e9);
-fig = plotaf(t_str, delay,v,the_af,true);
+fig = plotaf(t_str, delay,v,the_af,false);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
@@ -26,6 +26,6 @@ amp = ones(1,N);
 [clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
 t_str = sprintf('Simple pulse ( \\tau=%3.3e s, f=%1.2f GHz)      ', tau, carrier./1e9);
-fig = plotaf(t_str, delay,v,the_af, true);
+fig = plotaf(t_str, delay,v,the_af, false);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
