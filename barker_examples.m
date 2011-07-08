@@ -1,6 +1,6 @@
 clear all;
 close all;
-v_max = 100;
+v_max = 50;
 carrier = 9.55e9;
 series_name = 'barker';
 plot_title = 'Barker, 13 elements';
