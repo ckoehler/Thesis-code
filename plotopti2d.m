@@ -1,4 +1,4 @@
-function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, max_sidelobes, ppps)
+function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
   fontsize=12;
 
   fisl = figure;
@@ -11,8 +11,8 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, max_sidelobes, ppps)
 
 
   fmsl = figure;
-  surface(y,x,10*log10(max_sidelobes));
-  title('Maximum Sidelobe Levels    ', 'FontSize', fontsize);
+  surface(y,x,psl);
+  title('Peak Sidelobe Level    ', 'FontSize', fontsize);
   zlabel('dB    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);
   ylabel('a    ', 'FontSize', fontsize);

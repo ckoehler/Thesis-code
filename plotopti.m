@@ -1,4 +1,4 @@
-function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
+function fig=plotopti(x, isls, ress, psl, ppps)
 
   fontsize = 12;
   if nargin == 4
@@ -19,8 +19,8 @@ function fig=plotopti(x, isls, ress, max_sidelobes, ppps)
 
 
   subplot(rows, cols,2);
-  plot(x,10*log10(max_sidelobes));
-  title('Maximum Sidelobe Levels     ', 'FontSize', fontsize);
+  plot(x, psl);
+  title('Peak Sidelobe Level    ', 'FontSize', fontsize);
   ylabel('dB');
 
 

@@ -5,7 +5,7 @@ load 'nlfm_kaiser.mat';
 series_name='nlfm-kaiser';
 
 isls=[];
-max_sidelobes=[];
+psl=[];
 ress=[];
 ppps=[];
 
@@ -19,7 +19,7 @@ for i=1:l(1)
     amp = kaiser(200, kaiser_params(j));
     ppps(i,j,:)= ppp(amp);
     af = squeeze(afs(i,j,:,:));
-    [isls(i,j) max_sidelobes(i,j)] = isl(af);
+    [isls(i,j) psl(i,j)] = isl(af);
     ress(i,j,:) = res(af, delays(i,j,2)-delays(i,j,1));
     %if(ismember(i,screen))
       %t_str = sprintf('NLFM (a=%u)',a(i));
@@ -33,4 +33,4 @@ for i=1:l(1)
 end
 
 
-save('nlfm2dopti.mat', 'tau', 'series_name', 'a','kaiser_params','isls','ress','max_sidelobes', 'ppps');
+save('nlfm2dopti.mat', 'tau', 'series_name', 'a','kaiser_params','isls','ress','psl', 'ppps');

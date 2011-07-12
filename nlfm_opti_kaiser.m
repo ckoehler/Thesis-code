@@ -1,12 +1,12 @@
 clear all;
 close all;
 load('nlfm2dopti.mat');
-[fisl, fres,fmsl, fppr] = plotopti2d(a, kaiser_params, isls, ress,max_sidelobes, ppps);
+[fisl, fres,fmsl, fppr] = plotopti2d(a, kaiser_params, isls, ress,psl, ppps);
 filename = sprintf('../thesis/figures/%s-%ius-opti-isl.png', series_name,tau*1e6);
 print(fisl, '-dpng', '-r300', filename);
 filename = sprintf('../thesis/figures/%s-%ius-opti-res.png', series_name,tau*1e6);
 print(fres, '-dpng', '-r300', filename);
-filename = sprintf('../thesis/figures/%s-%ius-opti-msl.png', series_name,tau*1e6);
+filename = sprintf('../thesis/figures/%s-%ius-opti-psl.png', series_name,tau*1e6);
 print(fmsl, '-dpng', '-r300', filename);
 filename = sprintf('../thesis/figures/%s-%ius-opti-ppr.png', series_name,tau*1e6);
 print(fppr, '-dpng', '-r300', filename);
