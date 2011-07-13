@@ -102,3 +102,28 @@ title('LFM waveform, \tau=5 \mus    ', 'FontSize',fontsize);
 xlabel('Pulse length \tau    ', 'FontSize',fontsize);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
+
+
+%% simple pulse waveform show-n-tell
+impulse_response = [];
+phase = [];
+B = 5e6;
+tau = 15e-6;
+fs = 8e7;
+N = tau*fs;
+X = 100;
+Y = 2000;
+amp = [zeros(1,X) ones(1,N) zeros(1,X)];
+f_signal = [zeros(1,X) 8e5*ones(1,N) zeros(1,X)];
+[s signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+
+s = [s zeros(1, Y) s];
+
+new_N = 2*N+4*X+Y;
+x = 1:new_N;
+fig = figure;
+plot(x, real(s), x, abs(s), '--'); 
+ylim([-1.1 1.1]);
+xlim([0 new_N]);
+filename = '../thesis/figures/basic_waveform.png';
+print(fig, '-dpng', '-r300', filename);
