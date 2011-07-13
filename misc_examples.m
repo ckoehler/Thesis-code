@@ -67,3 +67,38 @@ fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
+
+
+%% Kaiser FFT
+close all;
+k = [0; kaiser(121,0); 0;];
+figure;
+plot(fftshift(abs(fft(fftshift(k)))));
+
+
+k = [0; kaiser(121,10); 0;];
+figure;
+plot(fftshift(abs(fft(fftshift(k)))));
+
+
+%% LFM waveform
+series_name = 'lfm-waveform';
+
+impulse_response = [];
+phase = [];
+B = 5e6;
+tau = 5e-6;
+fs = 8e7;
+N = tau*fs;
+amp = ones(1,N);
+f_signal = linspace(0,B,N);
+
+[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+fig = figure;
+x = linspace(0,tau,N);
+plot(x,real(clean_signal));
+xlim([0,tau]);
+title('LFM waveform, \tau=5 \mus    ', 'FontSize',fontsize);
+xlabel('Pulse length \tau    ', 'FontSize',fontsize);
+filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
