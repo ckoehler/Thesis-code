@@ -32,8 +32,8 @@ function [res psl the_min the_max] = isl(af)
     psl = max(psl_temp, psl);
 
     % compute side and mainlobe, and add them all up.
-    sidelobes = sidelobes + sum(sidelobes_only);
-    mainlobe = mainlobe + sum(af(jj,the_min+1:the_max));
+    sidelobes = sidelobes + sum(abs(sidelobes_only).^2);
+    mainlobe = mainlobe + sum(abs(af(jj,the_min+1:the_max)).^2);
   end
   psl = 20*log10(psl);
   res = 10*log10(sidelobes/mainlobe);
