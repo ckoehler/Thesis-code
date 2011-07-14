@@ -125,5 +125,6 @@ fig = figure;
 plot(x, real(s), x, abs(s), '--'); 
 ylim([-1.1 1.1]);
 xlim([0 new_N]);
+xlabel('time    ', 'FontSize', fontsize);
 filename = '../thesis/figures/basic_waveform.png';
 print(fig, '-dpng', '-r300', filename);
