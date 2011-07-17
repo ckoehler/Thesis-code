@@ -1,7 +1,7 @@
 close all;
 clear all;
 
-fontsize = 12;
+fontsize = 14;
 
 %% first a simple barker ACF
 phase = [ 1 1 1 1 1 -1 -1 1 1 -1 1 -1 1];
@@ -32,7 +32,8 @@ for i=1:length(kaiser_params)
   s{i} = sprintf('\\beta = %d', kaiser_params(i));
 end
 ind = [1 2 3 4 5 6];
-legend(h(ind),s{ind});
+leg=legend(h(ind),s{ind});
+set(leg, 'FontSize', fontsize);
 title('Kaiser Window with varying     \beta     ', 'FontSize', fontsize);
 ylabel('Amplitude    ', 'FontSize', fontsize);
 xlabel('Data points    ', 'FontSize',fontsize);
@@ -71,15 +72,32 @@ print(fig, '-dpng', '-r300', filename);
 
 %% Kaiser FFT
 close all;
-k = [0; kaiser(121,0); 0;];
-figure;
-plot(fftshift(abs(fft(fftshift(k)))));
+
+tau = 15e-6;
+N = 256;
+a = ones(1,20);
+a = fftshift(abs(fft(a, N)));
 
 
-k = [0; kaiser(121,10); 0;];
-figure;
-plot(fftshift(abs(fft(fftshift(k)))));
+b = kaiser(20,1);
+b = fftshift(abs(fft(b, N)));
 
+
+c = kaiser(20,10);
+c = fftshift(abs(fft(c, N)));
+
+d = kaiser(20,20);
+d = fftshift(abs(fft(d, N)));
+
+x = linspace(-N/2,N/2-1,N)/tau/1e3;
+fig = figure;
+plot(x,a,x,b,'--',x,c,':',x,d,'-.');
+xlabel('Frequency / kHz', 'FontSize', fontsize)
+leg = legend('rect. pulse','Kaiser \beta=1', 'Kaiser \beta=10', 'Kaiser \beta=20');
+set(leg, 'FontSize', fontsize);
+xlim([-.8e4 .8e4]);
+filename = '../thesis/figures/fftspec.png';
+print(fig, '-dpng', '-r300', filename);
 
 %% LFM waveform
 series_name = 'lfm-waveform';
@@ -127,4 +145,32 @@ ylim([-1.1 1.1]);
 xlim([0 new_N]);
 xlabel('time    ', 'FontSize', fontsize);
 filename = '../thesis/figures/basic_waveform.png';
+print(fig, '-dpng', '-r300', filename);
+
+
+%% pulse spectrum
+
+fontsize = 13;
+impulse_response = [];
+phase = [];
+B = 5e6;
+tau = 15e-6;
+fs = 1e8;
+N = tau*fs;
+fftN = 2^nextpow2(8*N);
+amp = ones(1,N);
+[s signal new_tau] = makesignal(amp, phase, [], impulse_response, tau, fs);
+
+ss = fftshift(abs(fft(s, fftN)));
+ss = ss/max(ss);
+
+
+x=linspace(-N/2,N/2-1,fftN)/tau/1e6;
+fig = figure;
+plot(x,ss);
+xlabel('Frequency / MHz','FontSize', fontsize);
+ylabel('Normalized Magnitude','FontSize', fontsize);
+title('Rectangular Pulse Frequency Spectrum','FontSize', fontsize);
+xlim([-4 4]);
+filename = '../thesis/figures/pulsespectrum.png';
 print(fig, '-dpng', '-r300', filename);
