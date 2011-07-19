@@ -19,8 +19,8 @@ max_sidelobes=zeros(points,1);
 ress=[];
 ppps=[];
 
-kaiser_params = linspace(0,50,points);
-the_slice = 8;
+kaiser_params = linspace(0,20,points);
+the_slice = 18;
 
 for i=1:length(kaiser_params)
   amp = kaiser(N, kaiser_params(i))';

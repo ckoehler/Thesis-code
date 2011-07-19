@@ -13,7 +13,7 @@ function fig = plotafslice(theslice, t_str, delay,af)
   af=20*log10(af);
   af(af<-100) = NaN;
   plot(delay, af(theslice,:));
-  %xlim([-1500 1500]);
+  xlim([-1500 1500]);
   title(t_str,'FontSize',fontsize);
   xlabel('Range delay in m    ','FontSize',fontsize);
   ylabel('dB      ', 'FontSize', fontsize);
