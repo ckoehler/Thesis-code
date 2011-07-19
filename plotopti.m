@@ -1,6 +1,6 @@
 function fig=plotopti(x, isls, ress, psl, ppps)
 
-  fontsize = 12;
+  fontsize = 14;
   if nargin == 4
     rows = 3;
     cols = 1;
@@ -35,7 +35,7 @@ function fig=plotopti(x, isls, ress, psl, ppps)
     subplot(rows,cols,4);
     plot(x,ppps);
     title('Pulse Power Ratio     ', 'FontSize', fontsize);
-    ylabel('Ratio     ', 'FontSize', fontsize);
+    ylabel('dB     ', 'FontSize', fontsize);
     xlabel('\beta     ', 'FontSize', fontsize);
   end
 

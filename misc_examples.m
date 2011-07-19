@@ -36,7 +36,7 @@ leg=legend(h(ind),s{ind});
 set(leg, 'FontSize', fontsize);
 title('Kaiser Window with varying     \beta     ', 'FontSize', fontsize);
 ylabel('Amplitude    ', 'FontSize', fontsize);
-xlabel('Data points    ', 'FontSize',fontsize);
+xlabel('Samples     ', 'FontSize',fontsize);
 ylim([0 1.05]);
 
 filename = '../thesis/figures/kaiserparams.png';
@@ -63,7 +63,7 @@ f_signal = linspace(-B/2,B/2,N);
 
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
-t_str = sprintf('%s ( \\tau=%3.3e s, f=%1.2f GHz)      ', plot_title, tau, carrier./1e9);
+t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);

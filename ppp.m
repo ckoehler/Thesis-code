@@ -1,6 +1,6 @@
 function r = ppp(amp)
   base = ones(1,length(amp));
-  a = double(sum(amp));
-  b = double(sum(base));
-  r = a./b;
+  a = double(sum(amp.^2));
+  b = double(sum(base.^2));
+  r = 10*log10(a./b);
 end

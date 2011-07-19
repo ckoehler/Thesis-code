@@ -1,5 +1,5 @@
 function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
-  fontsize=12;
+  fontsize=14;
 
   fisl = figure;
   surface(y,x,isls);
@@ -31,7 +31,7 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
   fppr = figure;
   surface(y,x,ppps);
   title('Pulse Power Ratio    ', 'FontSize', fontsize);
-  zlabel('Ratio    ', 'FontSize', fontsize);
+  zlabel('dB    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);
   ylabel('a    ', 'FontSize', fontsize);
   view(50, 40);

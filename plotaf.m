@@ -1,5 +1,6 @@
 function fig = plotaf(t_str, delay,v,af, uselin)
   fig = figure;
+  fontsize=14;
 
   if nargin==4
     db = true;
@@ -18,14 +19,14 @@ function fig = plotaf(t_str, delay,v,af, uselin)
   surface(delay, v, af);
   %surface(af);
   view(-40,50);
-  title(t_str,'FontSize',12);
-  xlabel('Range delay in m    ','FontSize',12);
-  ylabel('Radial velocity in m/s     ','FontSize',12);
+  title(t_str,'FontSize',fontsize);
+  xlabel('Range delay in m    ','FontSize',fontsize);
+  ylabel('Radial velocity in m/s     ','FontSize',fontsize);
 
   if db
-    zlabel('Normalized magnitude in dB    ','FontSize',12);
+    zlabel('dB    ','FontSize',fontsize);
   else
-    zlabel('Normalized magnitude ','FontSize',12);
+    zlabel('Normalized magnitude ','FontSize',fontsize);
   end
 
   %axis([-inf inf -inf inf -inf inf]);

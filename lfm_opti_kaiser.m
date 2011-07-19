@@ -20,7 +20,7 @@ ress=[];
 ppps=[];
 
 kaiser_params = linspace(0,50,points);
-the_slice = 13;
+the_slice = 8;
 
 for i=1:length(kaiser_params)
   amp = kaiser(N, kaiser_params(i))';
