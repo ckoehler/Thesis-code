@@ -91,7 +91,7 @@ d = fftshift(abs(fft(d, N)));
 
 x = linspace(-N/2,N/2-1,N)/tau/1e3;
 fig = figure;
-plot(x,a,x,b,'--',x,c,':',x,d,'-.');
+plot(x,a,'--',x,b,x,c,x,d);
 xlabel('Frequency / kHz', 'FontSize', fontsize)
 leg = legend('rect. pulse','Kaiser \beta=1', 'Kaiser \beta=10', 'Kaiser \beta=20');
 set(leg, 'FontSize', fontsize);
