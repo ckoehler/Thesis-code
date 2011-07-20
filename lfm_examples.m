@@ -25,6 +25,7 @@ fontsize=14;
 title('Frequency modulation function', 'FontSize', fontsize);
 ylabel('Frequency / Hz', 'FontSize', fontsize);
 xlabel('Pulse length', 'FontSize', fontsize);
+xlim([0 tau]);
 filename = sprintf('../thesis/figures/%s-fmf.png', series_name);
 print(fig, '-dpng', '-r300', filename);
 
