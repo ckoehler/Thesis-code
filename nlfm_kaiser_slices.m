@@ -2,7 +2,7 @@ close all;
 %clear all;
 % gets us: a, afs, delays, vs, tau, kaiser_params
 % a is size 70, kaiser_params, or beta, is 40.
-%load 'nlfm_kaiser.mat';
+load 'nlfm_kaiser.mat';
 series_name='nlfm-kaiser-slices';
 
 
@@ -32,7 +32,6 @@ for ii=1:length(idx)
 
 
   filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
-  print(fig, '-dpng', '-r300', filename);
 
 end
-
+print(fig, '-dpng', '-r300', filename);
