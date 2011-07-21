@@ -33,7 +33,7 @@ function [delay v af] = af(signal, clean_signal, tau, fs, v_max, f_points, carri
   af = [];
   
   % convert v_max to a frequency
-  f_max = v_max/lam;
+  f_max = 2*v_max/lam;
 
   % frequency span
   if full_af
@@ -58,5 +58,5 @@ function [delay v af] = af(signal, clean_signal, tau, fs, v_max, f_points, carri
   delay = [-fliplr(t) t(2:end)] * c / 2;
 
   % convert doppler frequency to velocity
-  v = f .* lam;
+  v = f .* lam ./ 2;
 end

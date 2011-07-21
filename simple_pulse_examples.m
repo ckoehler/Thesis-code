@@ -20,7 +20,7 @@ filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
 tau = 200e-6;
-fs = 2e5;
+fs = 1e7;
 N = tau*fs;
 amp = ones(1,N);
 [clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);
