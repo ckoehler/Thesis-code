@@ -29,11 +29,9 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
   view(-40, 30);
 
   fppr = figure;
-  surface(y,x,ppps);
+  plot(y,ppps(1,:));
   title('Pulse Power Ratio    ', 'FontSize', fontsize);
-  zlabel('dB    ', 'FontSize', fontsize);
+  ylabel('dB    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);
-  ylabel('a    ', 'FontSize', fontsize);
-  view(50, 40);
 
 end
