@@ -5,14 +5,15 @@ fontsize = 14;
 
 %% first a simple barker ACF
 phase = [ 1 1 1 1 1 -1 -1 1 1 -1 1 -1 1];
+x = -12:1:12;
 
 acf = abs(xcorr(phase,phase));
 
 fig = figure;
-plot(acf);
+plot(x, acf);
 title('Barker 13 Code ACF', 'FontSize', fontsize);
 ylabel('Amplitude    ', 'FontSize', fontsize);
-xlabel('Data points    ', 'FontSize',fontsize);
+xlabel('Lag', 'FontSize',fontsize);
 filename = '../thesis/figures/barker13-acf.png';
 print(fig, '-dpng', '-r300', filename);
 
@@ -26,9 +27,10 @@ s = cell(1,N);
 C = [1 0 0; 1 1 0; 0 1 0; 0 1 1; 0 0 1; 1 0 1];
 fig = figure;
 hold on;
+x = linspace(0,15e-6,points);
 for i=1:length(kaiser_params)
   amp = kaiser(points, kaiser_params(i))';
-  h(i) = plot(amp, 'Color', C(i, :));
+  h(i) = plot(x, amp, 'Color', C(i, :));
   s{i} = sprintf('\\beta = %d', kaiser_params(i));
 end
 ind = [1 2 3 4 5 6];
@@ -36,7 +38,7 @@ leg=legend(h(ind),s{ind});
 set(leg, 'FontSize', fontsize);
 title('Kaiser Window with varying     \beta     ', 'FontSize', fontsize);
 ylabel('Amplitude    ', 'FontSize', fontsize);
-xlabel('Samples     ', 'FontSize',fontsize);
+xlabel('Time / s     ', 'FontSize',fontsize);
 ylim([0 1.05]);
 
 filename = '../thesis/figures/kaiserparams.png';
@@ -69,6 +71,26 @@ xlim([-lim lim]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
+%% Pulse whole AF
+v_max = 6000;
+carrier = 9.55e9;
+
+f_points = 100;
+impulse_response = [];
+phase = [];
+B = 5e6;
+
+tau = 15e-6;
+fs = 8e7;
+N = tau*fs;
+amp = ones(1,N);
+
+[clean_signal signal new_tau] = makesignal(amp, phase, [], impulse_response, tau, fs);
+[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+t_str = sprintf('Pulse ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
+fig = plotaf(t_str, delay,v,the_af, true);
+filename = '../thesis/figures/pulsefullaf.png';
+print(fig, '-dpng', '-r300', filename);
 
 %% Kaiser FFT
 close all;
@@ -92,7 +114,8 @@ d = fftshift(abs(fft(d, N)));
 x = linspace(-N/2,N/2-1,N)/tau/1e3;
 fig = figure;
 plot(x,a,'--',x,b,x,c,x,d);
-xlabel('Frequency / kHz', 'FontSize', fontsize)
+xlabel('Frequency / kHz', 'FontSize', fontsize);
+ylabel('Amplitude', 'FontSize', fontsize);
 leg = legend('rect. pulse','Kaiser \beta=1', 'Kaiser \beta=10', 'Kaiser \beta=20');
 set(leg, 'FontSize', fontsize);
 xlim([-.8e4 .8e4]);
@@ -118,6 +141,7 @@ plot(x,real(clean_signal));
 xlim([0,tau]);
 title('LFM waveform, \tau=5 \mus    ', 'FontSize',fontsize);
 xlabel('Pulse length \tau    ', 'FontSize',fontsize);
+ylabel('Amplitude       ', 'FontSize', fontsize);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
@@ -143,7 +167,7 @@ fig = figure;
 plot(x, real(s), x, abs(s), '--'); 
 ylim([-1.1 1.1]);
 xlim([0 new_N]);
-xlabel('time    ', 'FontSize', fontsize);
+xlabel('Time    ', 'FontSize', fontsize);
 filename = '../thesis/figures/basic_waveform.png';
 print(fig, '-dpng', '-r300', filename);
 
@@ -162,15 +186,15 @@ amp = ones(1,N);
 [s signal new_tau] = makesignal(amp, phase, [], impulse_response, tau, fs);
 
 ss = fftshift(abs(fft(s, fftN)));
-ss = ss/max(ss);
+ss = 20*log10(ss/max(ss));
 
 
 x=linspace(-N/2,N/2-1,fftN)/tau/1e6;
 fig = figure;
 plot(x,ss);
 xlabel('Frequency / MHz','FontSize', fontsize);
-ylabel('Normalized Magnitude','FontSize', fontsize);
-title('Rectangular Pulse Frequency Spectrum','FontSize', fontsize);
+ylabel('dB   ','FontSize', fontsize);
+title('Rectangular Pulse    ','FontSize', fontsize);
 xlim([-4 4]);
 filename = '../thesis/figures/pulsespectrum.png';
 print(fig, '-dpng', '-r300', filename);

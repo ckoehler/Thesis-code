@@ -2,8 +2,12 @@ function fig = plotafslice(theslice, t_str, delay,af)
   fig = figure;
   fontsize=14;
 
-  l = size(af);
-  s = length(delay);
+  l = size(af)
+  s = length(delay)
+
+  %if mod(s,2) == 0
+    %af = af(:,1:end-1);
+  %end
 
   % if for some reason the dimensions don't quite match up, slice the af to make 
   % it fit.
@@ -13,7 +17,7 @@ function fig = plotafslice(theslice, t_str, delay,af)
   af=20*log10(af);
   af(af<-100) = NaN;
   plot(delay, af(theslice,:));
-  %xlim([-1500 1500]);
+  xlim([-1500 1500]);
   title(t_str,'FontSize',fontsize);
   xlabel('Range delay in m    ','FontSize',fontsize);
   ylabel('dB      ', 'FontSize', fontsize);
