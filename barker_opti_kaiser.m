@@ -28,7 +28,7 @@ the_slice = 3;
 kaiser_params = linspace(0,20,points);
 
 for i=1:length(kaiser_params)
-  amp = kaiser(N, kaiser_params(i))';
+  amp = subkaiser(N, kaiser_params(i), 25);
   [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
   [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
 
