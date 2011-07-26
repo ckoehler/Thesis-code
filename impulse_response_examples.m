@@ -59,6 +59,11 @@ fig = plotaf(t_str, delay,v,the_af);
 filename = sprintf('../thesis/figures/nlfmwir-%ius.png',tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
+[delay v the_af] = af(clean_signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+t_str = sprintf('NLFM ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
+fig = plotaf(t_str, delay,v,the_af);
+filename = sprintf('../thesis/figures/nlfm-%ius-af.png',tau*1e6);
+print(fig, '-dpng', '-r300', filename);
 
 
 %% barker

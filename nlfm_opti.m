@@ -8,18 +8,16 @@ isls=[];
 max_sidelobes=[];
 ress=[];
 l = size(vs);
-screen=[1 6 7 8 9 10 11 12 13 60 100];
-screen=[];
+screen=[1 100];
+%screen=[];
 for i=1:l(1)
   af = squeeze(afs(i,:,:));
   [isls(i) max_sidelobes(i)] = isl(af);
   ress(i,:) = res(af, delays(i,2)-delays(i,1));
   if(ismember(i,screen))
     t_str = sprintf('NLFM (a=%u)',a(i));
-    fig = plotaf(t_str, delays(i,:),vs(i,:),af);
-    view(0,0);
-    filename = '';
-    filename = sprintf('../thesis/figures/%s-%ius-%2.1f.png', series_name,tau*1e6,a(i));
+    fig = plotafslice(1,t_str, '', delays(i,:),af);
+    filename = sprintf('../thesis/figures/%s-%ius-10.png', series_name,tau*1e6);
     print(fig, '-dpng', '-r300', filename);
   end
 end
@@ -32,7 +30,7 @@ theslice=30;
 thea = a(theslice);
 t_str = '';
 t_str = sprintf('NLFM zero-Doppler slice for a=%f', thea);
-fig = plotafslice(1,t_str, delays(theslice,:),squeeze(afs(theslice,:,:)));
+fig = plotafslice(1,t_str, '', delays(theslice,:),squeeze(afs(theslice,:,:)));
 filename = sprintf('../thesis/figures/%s-%ius-0D-1.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
@@ -40,6 +38,6 @@ theslice=65;
 thea = a(theslice);
 t_str = '';
 t_str = sprintf('NLFM zero-Doppler slice for a=%f', thea);
-fig = plotafslice(1,t_str, delays(theslice,:),squeeze(afs(theslice,:,:)));
+fig = plotafslice(1,t_str, '',  delays(theslice,:),squeeze(afs(theslice,:,:)));
 filename = sprintf('../thesis/figures/%s-%ius-0D-2.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);

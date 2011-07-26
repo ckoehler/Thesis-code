@@ -22,9 +22,9 @@ fig = figure;
 x = linspace(0,tau,N);
 plot(x, f_signal);
 fontsize=14;
-title('Frequency modulation function', 'FontSize', fontsize);
-ylabel('Frequency / Hz', 'FontSize', fontsize);
-xlabel('Pulse length', 'FontSize', fontsize);
+title('Frequency modulation function     ', 'FontSize', fontsize);
+ylabel('Frequency / Hz    ', 'FontSize', fontsize);
+xlabel('Pulse length     ', 'FontSize', fontsize);
 xlim([0 tau]);
 filename = sprintf('../thesis/figures/%s-fmf.png', series_name);
 print(fig, '-dpng', '-r300', filename);
@@ -33,13 +33,13 @@ print(fig, '-dpng', '-r300', filename);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
-fig = plotaf(t_str, delay,v,the_af);
-xlim([-lim lim]);
+fig = plotafslice([1 100], t_str, {'v=0', 'v=50'}, delay,the_af);
+xlim([-1000 1000]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
-fig = plotafslice(1,t_str, delay,the_af);
-filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
+fig = plotaf(t_str, delay,v,the_af);
+filename = sprintf('../thesis/figures/%s-%ius-af.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
 
@@ -51,12 +51,9 @@ f_signal = linspace(-B/2, B/2, N);
 [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
 [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=200 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
-fig = plotaf(t_str, delay,v,the_af);
-xlim([-lim lim]);
+fig = plotafslice([1 100],t_str, {'v=0','v=50'}, delay,the_af);
+xlim([-1000 1000]);
 filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
-fig = plotafslice(1,t_str, delay,the_af);
-filename = sprintf('../thesis/figures/%s-%ius-0D.png', series_name,tau*1e6);
-print(fig, '-dpng', '-r300', filename);
 

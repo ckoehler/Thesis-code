@@ -14,6 +14,7 @@ plot(x, acf);
 title('Barker 13 Code ACF', 'FontSize', fontsize);
 ylabel('Amplitude    ', 'FontSize', fontsize);
 xlabel('Lag', 'FontSize',fontsize);
+xlim([-12 12]);
 filename = '../thesis/figures/barker13-acf.png';
 print(fig, '-dpng', '-r300', filename);
 

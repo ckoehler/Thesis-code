@@ -28,7 +28,8 @@ for i=1:length(kaiser_params)
   [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
 
   if i==the_slice
-    fig = plotafslice(1, 'Windowed AF with PPR=-3 dB', delay, the_af);
+    fig = plotafslice(1, 'Tapered AF with PPR=-3 dB', '', delay, the_af);
+    xlim([-1500 1500]);
     filename = sprintf('../thesis/figures/%s-%ius-opti-slice%i.png', series_name,tau*1e6,i);
     print(fig, '-dpng', '-r300', filename);
   end
