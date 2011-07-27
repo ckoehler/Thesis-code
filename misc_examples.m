@@ -199,3 +199,20 @@ title('Rectangular Pulse    ','FontSize', fontsize);
 xlim([-4 4]);
 filename = '../thesis/figures/pulsespectrum.png';
 print(fig, '-dpng', '-r300', filename);
+
+
+%% pulse and window
+N = 1000;
+tau = 15e-6;
+w = kaiser(N,7);
+rect = [0 ones(1,N-2) 0];
+x = linspace(0,tau, N);
+
+fig = figure;
+plot(x,w, x, rect);
+xlabel('Time / s ', 'FontSize', fontsize);
+ylabel('Amplitude', 'FontSize', fontsize);
+xlim([-1e-6 16e-6]);
+ylim([0, 1.1]);
+filename = '../thesis/figures/pprdemo.png';
+print(fig, '-dpng', '-r300', filename);
