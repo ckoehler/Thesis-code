@@ -216,3 +216,22 @@ xlim([-1e-6 16e-6]);
 ylim([0, 1.1]);
 filename = '../thesis/figures/pprdemo.png';
 print(fig, '-dpng', '-r300', filename);
+
+
+%% sinc function
+
+tau = 15e-6;
+fs = 1e9;
+N = tau*fs;
+f = linspace(-10/tau, 10/tau, N);
+fx = linspace(-10,10, N);
+x = abs(sinc(f.*tau));
+x = x/max(x);
+
+plot(fx, x);
+xlabel('Multiples of 1/\tau', 'FontSize', fontsize);
+ylabel('Amplitude', 'FontSize', fontsize);
+title('AF Doppler dimension of a rectangular pulse, \tau=15e-6 ', 'FontSize', fontsize); 
+xlim([-10 10]);
+filename = '../thesis/figures/sincnulls.png';
+print(fig, '-dpng', '-r300', filename);
