@@ -26,14 +26,15 @@ print(fig, '-dpng', '-r300', '../thesis/figures/tf1.png');
 
 
 %% pulse
-[clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal  = makesignal(amp, [], [], tau, fs);
+[delay v the_af] = af(impulse_response, signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('Pulse w/ IR distortion ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 print(fig, '-dpng', '-r300', '../thesis/figures/pulsewir-15us.png');
 
 
 
+return;
 
 
 %% LFM

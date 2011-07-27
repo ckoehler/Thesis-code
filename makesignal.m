@@ -1,16 +1,8 @@
-function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp, tau, fs)
-
-  ir_signal = [];
+function signal = makesignal(amp, phase, freq_mod, tau, fs)
 
   debug = false;
   if ~debug
     echo makesignal off;
-  end
-
-  if ~isempty(imp_resp)
-    ir = true;
-  else
-    ir = false;
   end
 
   if ~isempty(freq_mod)
@@ -57,12 +49,5 @@ function [signal ir_signal new_tau] = makesignal(amp, phase, freq_mod, imp_resp,
 
   % reassemble the signal
   signal = signal .* exp(j.*freq_mod);
-  new_tau = tau;
-
-  if ir
-    imp_resp = imp_resp ./ max(imp_resp);
-    ir_signal = conv(signal, imp_resp);
-    new_tau = tau / length(signal) * length(ir_signal);
-  end
 
 end
