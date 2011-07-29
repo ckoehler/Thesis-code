@@ -25,7 +25,7 @@ N=6;
 points = 100
 kaiser_params = linspace(0,10,N);
 s = cell(1,N);
-C = [1 0 0; 1 1 0; 0 1 0; 0 1 1; 0 0 1; 1 0 1];
+C = get(gca,'ColorOrder');
 fig = figure;
 hold on;
 x = linspace(0,15e-6,points);
