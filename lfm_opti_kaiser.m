@@ -24,8 +24,8 @@ the_slice = 18;
 
 for i=1:length(kaiser_params)
   amp = kaiser(N, kaiser_params(i))';
-  [clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-  [delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier, true);
+  signal  = makesignal(amp, phase, f_signal, tau, fs);
+  [delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier, true);
 
   if i==the_slice
     fig = plotafslice(1, 'Tapered AF with PPR=-3 dB', '', delay, the_af);

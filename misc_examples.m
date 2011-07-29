@@ -46,7 +46,7 @@ filename = '../thesis/figures/kaiserparams.png';
 print(fig, '-dpng', '-r300', filename);
 
 %% LFM whole AF
-v_max = 100000;
+v_max = 50000;
 carrier = 9.55e9;
 series_name = 'lfm-full';
 plot_title = 'LFM';
@@ -59,13 +59,40 @@ phase = [];
 B = 5e6;
 
 tau = 15e-6;
-fs = 8e7;
+fs = 1e8;
 N = tau*fs;
 amp = ones(1,N);
 f_signal = linspace(-B/2,B/2,N);
 
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal = makesignal(amp, phase, f_signal, tau, fs);
+[delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier);
+t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
+fig = plotaf(t_str, delay,v,the_af);
+xlim([-lim lim]);
+filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
+
+%% LFM whole AF, downchirp
+v_max = 50000;
+carrier = 9.55e9;
+series_name = 'lfm-full-downchirp';
+plot_title = 'LFM';
+lim = inf;
+
+
+f_points = 100;
+impulse_response = [];
+phase = [];
+B = 5e6;
+
+tau = 15e-6;
+fs = 1e8;
+N = tau*fs;
+amp = ones(1,N);
+f_signal = linspace(B/2,-B/2,N);
+
+signal = makesignal(amp, phase, f_signal, tau, fs);
+[delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
