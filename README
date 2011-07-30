@@ -1,4 +1,4 @@
-= Info =
+# Info 
 Matlab code for my thesis. No warranty whatsoever is given. The code may not even work. You can figure it out though. :)
 
 The two main functions are af.m, which computes the ambiguity function, and makesignal.m, that generates the signal to pass to the 
@@ -10,7 +10,7 @@ they can easily be plotted later without repeating the calculations.
 
 Hope it benefits someone. 
 
-= License =
+# License 
 
 Copyright 2011 Christoph Koehler
 Feel free to use the code for whatever you wish. Please give some credit.
