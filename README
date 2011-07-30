@@ -1,1 +1,16 @@
+= Info =
 Matlab code for my thesis. No warranty whatsoever is given. The code may not even work. You can figure it out though. :)
+
+The two main functions are af.m, which computes the ambiguity function, and makesignal.m, that generates the signal to pass to the 
+AF function. Most of the other files generate the plots used in the thesis. 
+
+Another set of files are those with "opti" in their name. They evaluate the optimizations for the Kaiser window and NLFM waveform. 
+Some of those, the ones ending in "_gen" just generate the data, which usually takes a long time, and saves them to a .mat file. That way,
+they can easily be plotted later without repeating the calculations.
+
+Hope it benefits someone. 
+
+= License =
+
+Copyright 2011 Christoph Koehler
+Feel free to use the code for whatever you wish. Please give some credit.
