@@ -12,5 +12,5 @@ Hope it benefits someone.
 
 # License 
 
-Copyright 2011 Christoph Koehler
+Copyright 2011 Christoph Koehler.
 Feel free to use the code for whatever you wish. Please give some credit.
