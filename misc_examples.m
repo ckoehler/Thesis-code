@@ -25,7 +25,7 @@ N=6;
 points = 100
 kaiser_params = linspace(0,10,N);
 s = cell(1,N);
-C = [1 0 0; 1 1 0; 0 1 0; 0 1 1; 0 0 1; 1 0 1];
+C = get(gca,'ColorOrder');
 fig = figure;
 hold on;
 x = linspace(0,15e-6,points);
@@ -46,7 +46,7 @@ filename = '../thesis/figures/kaiserparams.png';
 print(fig, '-dpng', '-r300', filename);
 
 %% LFM whole AF
-v_max = 100000;
+v_max = 50000;
 carrier = 9.55e9;
 series_name = 'lfm-full';
 plot_title = 'LFM';
@@ -59,13 +59,40 @@ phase = [];
 B = 5e6;
 
 tau = 15e-6;
-fs = 8e7;
+fs = 1e8;
 N = tau*fs;
 amp = ones(1,N);
 f_signal = linspace(-B/2,B/2,N);
 
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal = makesignal(amp, phase, f_signal, tau, fs);
+[delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier);
+t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
+fig = plotaf(t_str, delay,v,the_af);
+xlim([-lim lim]);
+filename = sprintf('../thesis/figures/%s-%ius.png', series_name,tau*1e6);
+print(fig, '-dpng', '-r300', filename);
+
+%% LFM whole AF, downchirp
+v_max = 50000;
+carrier = 9.55e9;
+series_name = 'lfm-full-downchirp';
+plot_title = 'LFM';
+lim = inf;
+
+
+f_points = 100;
+impulse_response = [];
+phase = [];
+B = 5e6;
+
+tau = 15e-6;
+fs = 1e8;
+N = tau*fs;
+amp = ones(1,N);
+f_signal = linspace(B/2,-B/2,N);
+
+signal = makesignal(amp, phase, f_signal, tau, fs);
+[delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('%s ( \\tau=15 \\mus, f=%1.2f GHz )      ', plot_title, carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 xlim([-lim lim]);
@@ -133,13 +160,14 @@ tau = 5e-6;
 fs = 8e7;
 N = tau*fs;
 amp = ones(1,N);
-f_signal = linspace(0,B,N);
+f_signal = linspace(-B/2,B/2,N);
 
-[clean_signal signal new_tau] = makesignal(amp, phase, f_signal, impulse_response, tau, fs);
+signal  = makesignal(amp, phase, f_signal, tau, fs);
 fig = figure;
-x = linspace(0,tau,N);
-plot(x,real(clean_signal));
-xlim([0,tau]);
+x = linspace(-tau/2,tau/2,N);
+plot(x,real(signal), x, imag(signal));
+legend('real','imaginary');
+xlim([-tau/2,tau/2]);
 title('LFM waveform, \tau=5 \mus    ', 'FontSize',fontsize);
 xlabel('Pulse length \tau    ', 'FontSize',fontsize);
 ylabel('Amplitude       ', 'FontSize', fontsize);
@@ -215,4 +243,23 @@ ylabel('Amplitude', 'FontSize', fontsize);
 xlim([-1e-6 16e-6]);
 ylim([0, 1.1]);
 filename = '../thesis/figures/pprdemo.png';
+print(fig, '-dpng', '-r300', filename);
+
+
+%% sinc function
+
+tau = 15e-6;
+fs = 1e9;
+N = tau*fs;
+f = linspace(-10/tau, 10/tau, N);
+fx = linspace(-10,10, N);
+x = abs(sinc(f.*tau));
+x = x/max(x);
+
+plot(fx, x);
+xlabel('Multiples of 1/\tau', 'FontSize', fontsize);
+ylabel('Amplitude', 'FontSize', fontsize);
+title('AF Doppler dimension of a rectangular pulse ', 'FontSize', fontsize); 
+xlim([-10 10]);
+filename = '../thesis/figures/sincnulls.png';
 print(fig, '-dpng', '-r300', filename);

@@ -18,20 +18,20 @@ impulse_response = impulse_response/max(impulse_response);
 
 %% IR plot
 fig = figure;
-plot(impulse_response);
-title('Impulse response', 'FontSize', fontsize);
-xlabel('Samples', 'FontSize', fontsize);
-ylabel('Gain', 'FontSize', fontsize);
+x = linspace(0, tau, N);
+plot(x, impulse_response);
+title('Impulse response   ', 'FontSize', fontsize);
+xlabel('Time / s   ', 'FontSize', fontsize);
+ylabel('Gain   ', 'FontSize', fontsize);
 print(fig, '-dpng', '-r300', '../thesis/figures/tf1.png');
 
 
 %% pulse
-[clean_signal signal new_tau] = makesignal(amp, [], [], impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal  = makesignal(amp, [], [], tau, fs);
+[delay v the_af] = af(impulse_response, signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('Pulse w/ IR distortion ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 print(fig, '-dpng', '-r300', '../thesis/figures/pulsewir-15us.png');
-
 
 
 
@@ -40,8 +40,8 @@ print(fig, '-dpng', '-r300', '../thesis/figures/pulsewir-15us.png');
 %
 B = 5e6;
 f_signal = linspace(-B/2,B/2,N);
-[clean_signal signal new_tau] = makesignal(amp, [], f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal = makesignal(amp, [], f_signal, tau, fs);
+[delay v the_af] = af(impulse_response, signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('LFM w/ IR distortion ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 filename = sprintf('../thesis/figures/lfmwir-%ius.png',tau*1e6);
@@ -52,14 +52,14 @@ print(fig, '-dpng', '-r300', filename);
 B = 5e6;
 a = 3;
 f_signal = B/2 .* generate_arbitrary_fm(tau, fs, a);
-[clean_signal signal new_tau] = makesignal(amp, [], f_signal, impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal = makesignal(amp, [], f_signal, tau, fs);
+[delay v the_af] = af(impulse_response, signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('NLFM w/ IR distortion ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 filename = sprintf('../thesis/figures/nlfmwir-%ius.png',tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 
-[delay v the_af] = af(clean_signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+[delay v the_af] = af([], signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('NLFM ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 filename = sprintf('../thesis/figures/nlfm-%ius-af.png',tau*1e6);
@@ -71,8 +71,8 @@ phase = [ 0 0 0 0 0 1 1 0 0 1 0 1 0] * pi;
 phase = kron(phase, ones(1,50));
 f_points = 100;
 %impulse_response = [];
-[clean_signal signal new_tau] = makesignal([], phase, [], impulse_response, tau, fs);
-[delay v the_af] = af(signal, clean_signal, new_tau, fs, v_max, f_points, carrier);
+signal = makesignal([], phase, [], tau, fs);
+[delay v the_af] = af(impulse_response, signal, tau, fs, v_max, f_points, carrier);
 t_str = sprintf('Barker w/ IR distortion ( \\tau=15 \\mus, f=%1.2f GHz )      ', carrier./1e9);
 fig = plotaf(t_str, delay,v,the_af);
 filename = sprintf('../thesis/figures/barkerwir-%ius.png', tau*1e6);
