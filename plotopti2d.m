@@ -3,6 +3,8 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
 
   fisl = figure;
   pcolor(y,x,isls);
+  colorbar();
+  caxis([-100 0]);
   title('Integrated Sidelobe Levels    ', 'FontSize', fontsize);
   zlabel('dB    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);
@@ -11,6 +13,8 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
 
   fmsl = figure;
   pcolor(y,x,psl);
+  colorbar();
+  caxis([-100 0]);
   title('Peak Sidelobe Level    ', 'FontSize', fontsize);
   zlabel('dB    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);
@@ -20,6 +24,7 @@ function [fisl fres fmsl fppr]=plotopti2d(x,y, isls, ress, psl, ppps)
 
   fres = figure;
   pcolor(y,x,ress(:,:,1));
+  colorbar();
   title('3dB Range Resolution    ', 'FontSize', fontsize);
   zlabel('Spatial delay in m    ', 'FontSize', fontsize);
   xlabel('\beta    ', 'FontSize', fontsize);

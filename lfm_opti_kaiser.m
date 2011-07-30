@@ -15,9 +15,12 @@ f_signal = linspace(-B/2,B/2,N);
 
 points = 100;
 isls=zeros(points,1);
+isls0d=zeros(points,1);
 max_sidelobes=zeros(points,1);
+max_sidelobes0d=zeros(points,1);
 ress=[];
 ppps=[];
+ress0d=[];
 
 kaiser_params = linspace(0,20,points);
 the_slice = 18;
@@ -34,13 +37,46 @@ for i=1:length(kaiser_params)
     print(fig, '-dpng', '-r300', filename);
   end
 
-  %fig = plotaf('', delay, v, the_af);
   [isls(i) max_sidelobes(i)] = isl(the_af);
+  [isls0d(i) max_sidelobes0d(i)] = isl(the_af(101,:));
   ress(i,:) = res(the_af, delay(2)-delay(1));
+  ress0d(i,:) = res(the_af(101,:), delay(2)-delay(1));
   ppps(i,:) = ppp(amp);
 end
 
-fig = plotopti(kaiser_params, isls, ress,max_sidelobes, ppps);
+x = kaiser_params;
+  cols = 2;
+  rows = 2;
+  ppp = true;
+  param = '\beta    ';
+
+  fig = figure;
+  subplot(rows,cols,1);
+  plot(x,isls,x, isls0d);
+  title('Integrated Sidelobe Levels     ', 'FontSize', fontsize);
+  ylabel('dB');
+
+
+  subplot(rows, cols,2);
+  plot(x, max_sidelobes,x,max_sidelobes0d);
+  title('Peak Sidelobe Level    ', 'FontSize', fontsize);
+  ylabel('dB');
+
+
+
+  subplot(rows,cols,3);
+  plot(x,ress(:,1), x, ress0d(:,1));
+  title('3dB Range Resolution     ', 'FontSize', fontsize);
+  ylabel('Spatial delay in m     ', 'FontSize', fontsize);
+  xlabel(param, 'FontSize', fontsize);
+
+  subplot(rows,cols,4);
+  plot(x,ppps, x, ppps);
+  title('Pulse Power Ratio     ', 'FontSize', fontsize);
+  ylabel('dB     ', 'FontSize', fontsize);
+  xlabel(param, 'FontSize', fontsize);
+  legend('whole AF', 'zero-Doppler slice');
+
 filename = sprintf('../thesis/figures/%s-%ius-opti.png', series_name,tau*1e6);
 print(fig, '-dpng', '-r300', filename);
 

@@ -40,7 +40,7 @@ function [delay v af] = af(impulse_response, signal, tau, fs, v_max, f_points, c
 
   % frequency span
   if full_af
-    f = linspace(-f_max,f_max, 2*f_points);
+    f = linspace(-f_max,f_max, 2*f_points+1);
   else
     f = linspace(0,f_max, f_points);
   end
